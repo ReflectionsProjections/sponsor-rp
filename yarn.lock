@@ -1128,6 +1128,16 @@
   resolved "https://registry.yarnpkg.com/@fontsource/lexend-exa/-/lexend-exa-5.0.20.tgz#8a4d3641660f07246f6b59e8f56f1a1695ba5c44"
   integrity sha512-sEMonlfHqumNDLDfsQXZCANNRLmE5d+S1cIeStr481NSb6ienA5Elte4sQiIjCiTup/bgyJ48xQONejA37Xilw==
 
+"@fontsource/nunito@^5.0.18":
+  version "5.0.18"
+  resolved "https://registry.yarnpkg.com/@fontsource/nunito/-/nunito-5.0.18.tgz#a5b2e306d4ac33e3b61c125a15554a282c430ee5"
+  integrity sha512-B7BS7ab43z5x9X6shdvwtHiYI73Y6kJvnHBJhoIdbqYbVGRf6kGMRfipH9dbmLsjL6elfxoAB3q75V23/qqE/g==
+
+"@fontsource/roboto-slab@^5.0.20":
+  version "5.0.20"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto-slab/-/roboto-slab-5.0.20.tgz#ecabb27829ac5067ca8fd5570b971602eaac77bd"
+  integrity sha512-71QJs8SvE0xcVtBb/Jg2/1TKWb7wVaENXRpFLp8fz+sq9Rp/xoKQRMcHQ8yIUIfKlL+SI2z4tYqUViC0SuRzSQ==
+
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"
