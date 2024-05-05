@@ -19,10 +19,12 @@ export function Page({pageContent, showNav}: PageProps) {
         templateAreas={showNav ? navTemplateArea : navLessTemplateArea}
         gridTemplateRows={'10vh 1fr'}
         gridTemplateColumns={showNav ? '0px 1fr' : '1fr'}
-        h='100vh'
+        h='100%'
+        minH={"100vh"}
         gap='1'
         fontWeight='bold'
         bg={"brand.100"}
+        overflow="hidden" height="100%"
     >
         <GridItem area={'header'} pl="10px" pt="10px">
             <NavBar />
