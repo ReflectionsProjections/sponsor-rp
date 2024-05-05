@@ -14,7 +14,7 @@ export function Home() {
                 right="0"
                 height="50%"
                 zIndex="1"
-                backgroundImage="/public/pink_grid_horizontal.svg"
+                backgroundImage="/pink_grid_horizontal.svg"
                 backgroundSize="cover"
             />
 
