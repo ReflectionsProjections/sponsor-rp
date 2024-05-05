@@ -1,5 +1,5 @@
 import { Grid, GridItem } from "@chakra-ui/react";
-import { NavBar } from "./Navbar";
+import { NavBar } from "./NavBar";
 
 interface PageProps {
     pageContent: React.ReactElement,
