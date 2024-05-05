@@ -6,7 +6,7 @@ export function NavBar() {
             <Image
                 src="/2024_rp_logo.svg"
                 maxH="100%"
-                _hover={{ filter: "brightness(50%)", transition: "filter 0.2s ease-in-out" }}  
+                _hover={{ filter: "brightness(30%)", transition: "filter 0.2s ease-in-out", cursor: "pointer" }}  
                 onClick={() => {window.location.href = "https://reflectionsprojections.org"}}
             />
         </Box>
