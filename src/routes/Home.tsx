@@ -48,7 +48,7 @@ export function Home() {
                 </HStack>
                 <Spacer />
                 <HStack justifyContent="center" spacing="220px">
-                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }}> Sponsorship Packet </Button>
+                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href="/RP2024_SponsorshipDoc.pdf"> Sponsorship Packet </Button>
                     <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href={mailToUrl}> I'm Interested! </Button>
                 </HStack>
             </Flex>
