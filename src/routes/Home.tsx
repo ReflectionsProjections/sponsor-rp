@@ -6,6 +6,8 @@ import '@fontsource/lexend-exa'
 import '@fontsource/roboto-slab'
 import '@fontsource/nunito'
 
+const mailToUrl = "mailto:divyam4@illinois.edu, snall6@illinois.edu?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections";
+
 export function Home() {
     return (
         <Box>
@@ -31,9 +33,9 @@ export function Home() {
                     <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"900"}> Midwest's largest tech conference? </Text>
                 </Box>
                 <Spacer />
-                <HStack justifyContent="center" spacing="100px" textAlign={"center"}>
+                <HStack justifyContent="center" spacing="150px" textAlign={"center"}>
                     <Box>
-                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> XXXX </Text>
+                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> 2500+ </Text>
                         <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> attendees </Text>
                     </Box>
                     
@@ -43,16 +45,15 @@ export function Home() {
                     </Box>
                     
                     <Box>
-                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> XXXX </Text>
+                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> 20+ </Text>
                         <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> events </Text>
                     </Box>
                     
-                    
                 </HStack>
                 <Spacer />
-                <HStack justifyContent="center" spacing="100px">
+                <HStack justifyContent="center" spacing="220px">
                     <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }}> Sponsorship Packet </Button>
-                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }}> I'm Interested! </Button>
+                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href={mailToUrl}> I'm Interested! </Button>
                 </HStack>
             </Flex>
         </Box>
