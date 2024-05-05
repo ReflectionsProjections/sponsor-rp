@@ -3,6 +3,8 @@ import '@fontsource/kufam/700.css'
 import '@fontsource/lexend-deca'
 import '@fontsource/lexend-deca/700.css'
 import '@fontsource/lexend-exa'
+import '@fontsource/roboto-slab'
+import '@fontsource/nunito'
 
 export function Home() {
     return (
@@ -20,31 +22,35 @@ export function Home() {
 
             <Flex height="77vh" mt="5vh" mb="5vh" pb="15vh" flexDirection={"column"} textAlign="center" textColor={"white"}>
                 <Box p='4' >
-                    <Text fontSize="56" fontFamily="kufam" fontWeight={"700"} letterSpacing={"0.07em"} mb="12px"> reflections | projections </Text>
-                    <Text fontSize="24" whiteSpace="pre-line" fontFamily={"Lexend Deca"} fontWeight={"400"}>  Interested in sponsoring the {"\n"}</Text>
-                    <Text fontSize="24" fontFamily={"Lexend Deca"} fontWeight={"700"}> Midwest's largest tech conference? </Text>
+                    <HStack justifyContent="center" spacing="8px" textAlign={"center"}>
+                        <Text fontSize="56" fontFamily={"Roboto Slab"} fontWeight={"700"} letterSpacing={"0.08em"}> reflections </Text>
+                        <Text fontSize="120" fontFamily={"Roboto Slab"} fontWeight={"300"} letterSpacing={"0.08em"} mt="-10px"> | </Text>
+                        <Text fontSize="56" fontFamily={"Roboto Slab"} fontWeight={"700"} letterSpacing={"0.08em"}> projections </Text>
+                    </HStack>
+                    <Text fontSize="24" whiteSpace="pre-line" fontFamily={"Nunito"} fontWeight={"400"}>  Interested in sponsoring the {"\n"}</Text>
+                    <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"900"}> Midwest's largest tech conference? </Text>
                 </Box>
                 <Spacer />
                 <HStack justifyContent="center" spacing="100px" textAlign={"center"}>
                     <Box>
-                        <Text fontSize="32" fontFamily={"Lexend Exa"} fontWeight={"400"}> XXXX </Text>
-                        <Text fontSize="32" fontFamily={"Lexend Exa"} fontWeight={"400"}> attendees </Text>
+                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> XXXX </Text>
+                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> attendees </Text>
                     </Box>
                     
                     <Box>
-                        <Text fontSize="40" fontFamily={"Lexend Exa"} fontWeight={"700"}> SEPTEMBER </Text>
-                        <Text fontSize="40" fontFamily={"Lexend Exa"} fontWeight={"700"}> 18-22 </Text>
+                        <Text fontSize="40" fontFamily={"Nunito"} fontWeight={"700"} letterSpacing={"0.09em"}> SEPTEMBER </Text>
+                        <Text fontSize="40" fontFamily={"Nunito"} fontWeight={"700"}> 18-22 </Text>
                     </Box>
                     
                     <Box>
-                        <Text fontSize="32" fontFamily={"Lexend Exa"} fontWeight={"400"}> XXXX </Text>
-                        <Text fontSize="32" fontFamily={"Lexend Exa"} fontWeight={"400"}> events </Text>
+                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> XXXX </Text>
+                        <Text fontSize="32" fontFamily={"Nunito"} fontWeight={"400"}> events </Text>
                     </Box>
                     
                     
                 </HStack>
                 <Spacer />
-                <HStack justifyContent="center" spacing="100px">
+                <HStack justifyContent="center" spacing="100px" mt="40px">
                     <Button w={"220px"}> Sponsorship Packet </Button>
                     <Button w={"220px"}> I'm Interested! </Button>
                 </HStack>
