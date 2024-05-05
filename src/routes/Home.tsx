@@ -1,8 +1,4 @@
 import { Box, Flex, Text, Spacer, HStack, Button } from "@chakra-ui/react";
-import '@fontsource/kufam/700.css'
-import '@fontsource/lexend-deca'
-import '@fontsource/lexend-deca/700.css'
-import '@fontsource/lexend-exa'
 import '@fontsource/roboto-slab'
 import '@fontsource/nunito'
 
