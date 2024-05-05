@@ -8,7 +8,7 @@ import '@fontsource/nunito'
 
 export function Home() {
     return (
-        <Box overflow="hidden" height="100%">
+        <Box>
             <Box
                 position="fixed"
                 bottom="0"
@@ -50,9 +50,9 @@ export function Home() {
                     
                 </HStack>
                 <Spacer />
-                <HStack justifyContent="center" spacing="100px" mt="40px">
-                    <Button w={"220px"}> Sponsorship Packet </Button>
-                    <Button w={"220px"}> I'm Interested! </Button>
+                <HStack justifyContent="center" spacing="100px">
+                    <Button w={"220px"} zIndex={"1"}> Sponsorship Packet </Button>
+                    <Button w={"220px"} zIndex={"1"}> I'm Interested! </Button>
                 </HStack>
             </Flex>
         </Box>
