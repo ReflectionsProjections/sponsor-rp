@@ -5,7 +5,8 @@ interface Resume {
     id: string;
     name: string;
     imageUrl: string;
-    metadata: string;
+    major: string;
+    graduationYear: string;
 }
 
 interface ResumeGridProps {
@@ -23,7 +24,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
   return (
     <Box padding="4">
       {/* <Text fontSize="2xl" mb="4">Resumes</Text> */}
-      <SimpleGrid columns={{ sm: 2, md: 3, lg: 4 }} spacing="8">
+      <SimpleGrid columns={{ sm: 2, md: 4, lg: 6 }} spacing="6">
         {resumes.map((resume) => {
             const isSelected = selectedResumes.includes(resume.id);
             return (
@@ -38,13 +39,16 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                     position="relative"
                     cursor="pointer"
                     borderColor={isSelected ? 'blue.500' : 'gray.200'}
+                    _hover={{ background: 'gray.100'}}
                     //   _hover={{ borderColor: 'black', borderWidth: '2px' }}
                     >
                     <Box 
                         position="relative"
                         onClick={() => openResume(resume.id)}
                         transition='all 0.3s ease-in-out'
-                        _hover={{ '& .hover-text': { display: 'flex' }, '& .resume-img': { transform: 'scale(1.1)'}}}
+                        border='2px solid transparent'
+                        
+                        _hover={{ border: '2px solid black', borderRadius: '8px', '& .hover-text': { display: 'flex' }, '& .resume-img': { transform: 'scale(1.1)'}}}
                         >
                         <Image
                             className='resume-img'
@@ -74,10 +78,11 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                             OPEN
                         </Box>
                     </Box>
-                    <Box width='100%' height='40%' onClick={() => toggleResume(resume.id)}>
+                    <Box width='108%' height='30%' onClick={() => toggleResume(resume.id)}>
                         <VStack align="start" mt="4">
                             <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-                            <Text color="gray.500" fontSize="sm">{resume.metadata}</Text>
+                            <Text color="gray.500" fontSize="sm">{resume.major}</Text>
+                            <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
                         </VStack>
                         <Checkbox 
                             position="absolute" 
