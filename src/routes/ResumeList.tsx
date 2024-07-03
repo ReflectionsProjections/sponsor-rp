@@ -20,7 +20,8 @@ const ResizableColumn: React.FC<{
     width: number;
     onResize: (width: number) => void;
     children: React.ReactNode;
-  }> = ({ width, onResize, children }) => {
+    canResize: boolean;
+  }> = ({ width, onResize, children, canResize }) => {
     const startXRef = useRef<number | null>(null);
   
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
@@ -51,6 +52,7 @@ const ResizableColumn: React.FC<{
         cursor="default"
       >
         {children}
+        {canResize ? (
         <Box
           position="absolute"
           right="-6px"
@@ -64,6 +66,7 @@ const ResizableColumn: React.FC<{
           onMouseDown={handleMouseDown}
           zIndex="1"
         />
+        ) : null}
       </Box>
     );
   };
@@ -102,6 +105,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
   }, [navbarTop]);
 
   const [isLargerThan1800] = useMediaQuery("(min-width: 1800px)");
+  const [isLargerThan1550] = useMediaQuery("(min-width: 1550px)");  
   const [isLargerThan1280] = useMediaQuery("(min-width: 1280px)");
   const [isLargerThan960] = useMediaQuery("(min-width: 960px)");
   const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
@@ -115,7 +119,16 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
           name: 475,
           major: 500,
           graduationYear: 550,
-          actions: 250,
+          actions: 150,
+          data: 300,
+        });
+    } else if (isLargerThan1550) {
+        setColumnWidths({
+          checkbox: 50,
+          name: 425,
+          major: 400,
+          graduationYear: 400,
+          actions: 150,
           data: 300,
         });
     } else if (isLargerThan1280) {
@@ -123,8 +136,8 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         checkbox: 50,
         name: 375,
         major: 300,
-        graduationYear: 250,
-        actions: 250,
+        graduationYear: 350,
+        actions: 100,
         data: 300,
       });
     } else if (isLargerThan960) {
@@ -173,7 +186,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         data: 150,
       });
     }
-  }, [isLargerThan1800, isLargerThan1280, isLargerThan960, isLargerThan700, isLargerThan550, isLargerThan400]);
+  }, [isLargerThan1800, isLargerThan1550, isLargerThan1280, isLargerThan960, isLargerThan700, isLargerThan550, isLargerThan400]);
 
   const [isDragging] = useState(false);
 
@@ -214,30 +227,30 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
             {isLargerThan700 ? (
                 <>
                 <GridItem>
-                    <ResizableColumn width={columnWidths.name} onResize={(width) => handleResize('name', width)}>
+                    <ResizableColumn width={columnWidths.name} onResize={(width) => handleResize('name', width)} canResize={true}>
                     <Text fontWeight="bold">Name</Text>
                     </ResizableColumn>
                 </GridItem>
                 <GridItem>
-                    <ResizableColumn width={columnWidths.major} onResize={(width) => handleResize('major', width)}>
+                    <ResizableColumn width={columnWidths.major} onResize={(width) => handleResize('major', width)} canResize={true}>
                     <Text fontWeight="bold">Major</Text>
                     </ResizableColumn>
                 </GridItem>
                 <GridItem>
-                    <ResizableColumn width={columnWidths.graduationYear} onResize={(width) => handleResize('graduationYear', width)}>
+                    <ResizableColumn width={columnWidths.graduationYear} onResize={(width) => handleResize('graduationYear', width)} canResize={true}>
                     <Text fontWeight="bold">Grad Year</Text>
                     </ResizableColumn>
                 </GridItem>
                 </>
             ) : (
                 <GridItem>
-                <ResizableColumn width={columnWidths.data} onResize={(width) => handleResize('data', width)}>
+                <ResizableColumn width={columnWidths.data} onResize={(width) => handleResize('data', width)} canResize={true}>
                     <Text fontWeight="bold">Data</Text>
                 </ResizableColumn>
                 </GridItem>
             )}
             <GridItem>
-                <ResizableColumn width={columnWidths.actions} onResize={(width) => handleResize('actions', width)}>
+                <ResizableColumn width={columnWidths.actions} onResize={(width) => handleResize('actions', width)} canResize={false}>
                 <Text fontWeight="bold">Actions</Text>
                 </ResizableColumn>
             </GridItem>

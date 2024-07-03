@@ -34,12 +34,13 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                     borderRadius="lg" 
                     overflow="hidden"
                     padding="4"
-                    background="white"
+                    background={isSelected ? 'blue.200' : 'white'}
                     boxShadow="md"
                     position="relative"
                     cursor="pointer"
                     borderColor={isSelected ? 'blue.500' : 'gray.200'}
-                    _hover={{ background: 'gray.100'}}
+                    transition='all 0.2s'
+                    _hover={{ transform: 'scale(1.05)', borderColor: 'black', borderWidth: '3px'}}
                     //   _hover={{ borderColor: 'black', borderWidth: '2px' }}
                     >
                     <Box 
@@ -84,14 +85,14 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                             <Text color="gray.500" fontSize="sm">{resume.major}</Text>
                             <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
                         </VStack>
-                        <Checkbox 
+                        {/* <Checkbox 
                             position="absolute" 
                             bottom="4" 
                             right="4" 
                             // size="lg"
                             isChecked={selectedResumes.includes(resume.id)}
                             onChange={() => toggleResume(resume.id)}
-                        />
+                        /> */}
                     </Box>
                 </Box>
             );
