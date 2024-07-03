@@ -111,6 +111,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
   const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [isLargerThan400] = useMediaQuery("(min-width: 400px)");
+  const [isLargerThan330] = useMediaQuery("(min-width: 330px)");
 
   useEffect(() => {
     if (isLargerThan1800) {
@@ -173,8 +174,17 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         name: 100,
         major: 150,
         graduationYear: 100,
-        actions: 100,
-        data: 240,
+        actions: 60,
+        data: 220,
+      });
+    } else if (isLargerThan330) {
+      setColumnWidths({
+        checkbox: 50,
+        name: 125,
+        major: 200,
+        graduationYear: 100,
+        actions: 60,
+        data: 150,
       });
     } else {
       setColumnWidths({
@@ -182,11 +192,11 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         name: 125,
         major: 200,
         graduationYear: 100,
-        actions: 100,
-        data: 150,
+        actions: 60,
+        data: 100,
       });
     }
-  }, [isLargerThan1800, isLargerThan1550, isLargerThan1280, isLargerThan960, isLargerThan700, isLargerThan550, isLargerThan400]);
+  }, [isLargerThan1800, isLargerThan1550, isLargerThan1280, isLargerThan960, isLargerThan700, isLargerThan550, isLargerThan400, isLargerThan330]);
 
   const [isDragging] = useState(false);
 

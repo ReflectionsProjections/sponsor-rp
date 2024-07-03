@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import { Box, Button, ChakraProvider, Flex, Icon, IconButton, Text } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, MenuDivider } from '@chakra-ui/react';
 import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
-import { BsGrid, BsList } from "react-icons/bs";
+import { BsGrid, BsList, BsDownload } from "react-icons/bs";
+import { BiSelectMultiple } from "react-icons/bi";
+import { TiDocumentDelete } from "react-icons/ti";
 
 interface Resume {
     id: string;
@@ -36,6 +38,21 @@ export function ResumeBook() {
 
   const [showList, setShowList] = useState(true);
   const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+          setIsMobile(window.innerWidth < 550);
+        };
+
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }, []);
 
   const toggleResume = (id: string) => {
     setSelectedResumes((prev) =>
@@ -51,13 +68,62 @@ export function ResumeBook() {
     }
   };
 
+  const signOut = () => {
+    localStorage.removeItem("jwt");
+    window.location.href = "/";
+  }
+
     return (
         <ChakraProvider>
+            <Flex h={16} alignItems={'center'} justifyContent={'space-between'} color='white' padding='10px'>
+                {/* <IconButton
+                    size={'lg'}
+                    icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+                    aria-label={'Open Menu'}
+                    display={{ md: 'none' }}
+                    onClick={isOpen ? onClose : onOpen}
+                /> */}
+                <HStack spacing={8} alignItems={'center'}>
+                    <Flex align="center" mr={5} maxWidth={50}>
+                    <Image
+                        src="/2024_rp_logo.svg"
+                        minHeight={50}
+                        maxH="100%"
+                        _hover={{ filter: "brightness(30%)", transition: "filter 0.2s ease-in-out", cursor: "pointer" }}
+                        onClick={() => { window.location.href = "/" }}
+                    />
+                    </Flex>
+                </HStack>
+                Resume Book
+                <Flex alignItems={'center'}>
+                    <Menu>
+                    <MenuButton
+                        as={Button}
+                        rounded={'full'}
+                        variant={'link'}
+                        cursor={'pointer'}
+                        minW={0}>
+                        <Avatar
+                        size={'sm'}
+                        src={
+                            'https://cdn-icons-png.freepik.com/512/8742/8742495.png'
+                        }
+                        />
+                    </MenuButton>
+                    <MenuList color='black'>
+                        {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
+                        {/* <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem> */}
+                        <MenuDivider />
+                        <MenuItem onClick={signOut}>Sign Out</MenuItem>
+                    </MenuList>
+                    </Menu>
+                </Flex>
+                </Flex>
             <Box bg="gray.200" p={4}>
                 <Flex justify="space-between" align="center">
-                    <Text fontSize="xl" fontWeight="bold">Resume Book</Text>
+                    {/* <Flex align="center"></Flex> */}
                     
-                    <Flex>
+                    <Flex align='flex-start'>
                         <IconButton
                             aria-label='List View'
                             icon={<Icon as={BsList} boxSize={6} />}
@@ -75,10 +141,17 @@ export function ResumeBook() {
                         />
                     </Flex>
                     <Flex>
-                        <Button onClick={selectAllResumes} mb="4" backgroundColor={selectedResumes.length === resumes.length ? 'lightsalmon' : 'lightblue'}>
-                            {selectedResumes.length === resumes.length ? 'Deselect All' : 'Select All'}
+
+                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === resumes.length ? 'lightsalmon' : 'lightblue'} border='1px solid transparent' _hover={{ border:'1px solid black'}}>
+                            {isMobile ? (
+                                selectedResumes.length === resumes.length ? <TiDocumentDelete/> : <BiSelectMultiple/>
+                            ) : (
+                                selectedResumes.length === resumes.length ? 'Deselect All' : 'Select All'
+                            )}
                         </Button>
-                        <Button mr={2}>Download</Button>
+                        <Button mr={2} border='1px solid transparent' _hover={{ border:'1px solid black'}}>
+                            {isMobile ? <BsDownload/> : 'Download'}
+                        </Button>
                         {/* <Button>Button 3</Button> */}
                     </Flex>
                 </Flex>
