@@ -1,5 +1,7 @@
 import React from 'react';
-import { SimpleGrid, Box, Text, Image, VStack, Checkbox } from '@chakra-ui/react';
+import { SimpleGrid, Box, Text, Image, VStack, Checkbox, useToast } from '@chakra-ui/react';
+import axios from 'axios';
+import { Config } from '../config';
 
 interface Resume {
     id: string;
@@ -13,12 +15,36 @@ interface ResumeGridProps {
   resumes: Resume[];
   selectedResumes: string[];
   toggleResume: (id: string) => void;
+  baseColor: string;
 }
 
-const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggleResume }) => {
+const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggleResume, baseColor }) => {
+
+  const toast = useToast();
+  
+  const showToast = (message: string) => {
+      toast({
+      title: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+      });
+  }
+
   const openResume = (id: string) => {
-    console.log(`Opening resume with id: ${id}`);
-    // Add your logic to open the resume here
+    const jwt = localStorage.getItem('jwt');
+    axios.get(Config.API_BASE_URL + "/s3/download/user/"+ id, {
+        headers: {
+            Authorization: jwt
+        }
+    })
+    .then(function (response) {
+        window.open(response.data.url, '_blank');
+    })
+    .catch(function (error) {
+        console.log(error);
+        showToast("Failed to open resume. Please try again later.");
+    })
   };
 
   return (
@@ -34,11 +60,11 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                     borderRadius="lg" 
                     overflow="hidden"
                     padding="4"
-                    background={isSelected ? 'blue.200' : 'white'}
+                    background={isSelected ? 'blue.200' : 'gray.'+baseColor}
                     boxShadow="md"
                     position="relative"
                     cursor="pointer"
-                    borderColor={isSelected ? 'blue.500' : 'gray.200'}
+                    borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
                     transition='all 0.2s'
                     _hover={{ transform: 'scale(1.05)', borderColor: 'black', borderWidth: '3px'}}
                     //   _hover={{ borderColor: 'black', borderWidth: '2px' }}

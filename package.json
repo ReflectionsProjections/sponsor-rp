@@ -19,6 +19,8 @@
     "@fontsource/lexend-exa": "^5.0.20",
     "@fontsource/nunito": "^5.0.18",
     "@fontsource/roboto-slab": "^5.0.20",
+    "axios": "^1.7.2",
+    "file-saver": "^2.0.5",
     "framer-motion": "^11.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -1,6 +1,8 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, Text, Checkbox, VStack, Grid, GridItem, useMediaQuery, Button } from '@chakra-ui/react';
+import { Box, Text, Checkbox, VStack, Grid, GridItem, useMediaQuery, Button, useToast, useColorModeValue } from '@chakra-ui/react';
 import { MdOpenInNew } from "react-icons/md";
+import axios from 'axios';
+import { Config } from '../config';
 
 interface Resume {
     id: string;
@@ -14,6 +16,7 @@ interface ResumeListProps {
   resumes: Resume[];
   selectedResumes: string[];
   toggleResume: (id: string) => void;
+  baseColor: string;
 }
 
 const ResizableColumn: React.FC<{
@@ -21,9 +24,11 @@ const ResizableColumn: React.FC<{
     onResize: (width: number) => void;
     children: React.ReactNode;
     canResize: boolean;
-  }> = ({ width, onResize, children, canResize }) => {
+    baseColor: string;
+  }> = ({ width, onResize, children, canResize, baseColor }) => {
     const startXRef = useRef<number | null>(null);
-  
+    const viewColor = "gray."+baseColor;
+    const selectViewColor = "gray."+(parseInt(baseColor)-100);
     const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
       startXRef.current = e.clientX;
       
@@ -60,9 +65,9 @@ const ResizableColumn: React.FC<{
           height="100%"
           width="3px"
           cursor="col-resize"
-          backgroundColor="gray.300"
+          backgroundColor={viewColor}
           transition="all 0.3s"
-          _hover={{ backgroundColor: "gray.500", height: "120%", top: "-10%"}}
+          _hover={{ backgroundColor: {selectViewColor}, height: "120%", top: "-10%"}}
           onMouseDown={handleMouseDown}
           zIndex="1"
         />
@@ -71,7 +76,7 @@ const ResizableColumn: React.FC<{
     );
   };
 
-const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggleResume }) => {
+const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggleResume, baseColor }) => {
   const [columnWidths, setColumnWidths] = useState({
     checkbox: 50,
     name: 175,
@@ -84,6 +89,9 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
   const navbarRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
   const [navbarTop, setNavbarTop] = useState(0);
+  // const viewColor = "gray."+baseColor;
+  const bgColor = parseInt(baseColor) < 500 ? "gray."+(parseInt(baseColor)-100) : "gray."+(100+parseInt(baseColor))
+  // const selectViewColor = useColorModeValue("gray.300","gray.600")
 
   useEffect(() => {
     const navbar = navbarRef.current;
@@ -102,7 +110,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [navbarTop]);
+  }, [navbarTop, baseColor]);
 
   const [isLargerThan1800] = useMediaQuery("(min-width: 1800px)");
   const [isLargerThan1550] = useMediaQuery("(min-width: 1550px)");  
@@ -206,10 +214,33 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
           [column]: newWidth,
       }));
   }, []);
-
+  
+  const toast = useToast();
+  
+  const showToast = (message: string) => {
+      toast({
+      title: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+      });
+  }
 
   const openResume = (id: string) => {
-      console.log(`Opening resume with id: ${id}`);
+    const jwt = localStorage.getItem('jwt');
+    axios.get(Config.API_BASE_URL + "/s3/download/user/"+ id, {
+        headers: {
+            Authorization: jwt
+        }
+    })
+    .then(function (response) {
+        // console.log(response.data.url);
+        window.open(response.data.url, '_blank');
+    })
+    .catch(function (error) {
+        // console.log(error);
+        showToast("Failed to open resume. Please try again later.");
+    })
   };
 
   return (
@@ -221,7 +252,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         borderWidth="1px"
         overflow="hidden"
         padding="4"
-        background="gray.100"
+        background={bgColor}
         boxShadow="md"
         width="100%"
         zIndex="10"
@@ -237,30 +268,30 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
             {isLargerThan700 ? (
                 <>
                 <GridItem>
-                    <ResizableColumn width={columnWidths.name} onResize={(width) => handleResize('name', width)} canResize={true}>
+                    <ResizableColumn width={columnWidths.name} onResize={(width) => handleResize('name', width)} canResize={true} baseColor={baseColor}>
                     <Text fontWeight="bold">Name</Text>
                     </ResizableColumn>
                 </GridItem>
                 <GridItem>
-                    <ResizableColumn width={columnWidths.major} onResize={(width) => handleResize('major', width)} canResize={true}>
+                    <ResizableColumn width={columnWidths.major} onResize={(width) => handleResize('major', width)} canResize={true} baseColor={baseColor}>
                     <Text fontWeight="bold">Major</Text>
                     </ResizableColumn>
                 </GridItem>
                 <GridItem>
-                    <ResizableColumn width={columnWidths.graduationYear} onResize={(width) => handleResize('graduationYear', width)} canResize={true}>
+                    <ResizableColumn width={columnWidths.graduationYear} onResize={(width) => handleResize('graduationYear', width)} canResize={true} baseColor={baseColor}>
                     <Text fontWeight="bold">Grad Year</Text>
                     </ResizableColumn>
                 </GridItem>
                 </>
             ) : (
                 <GridItem>
-                <ResizableColumn width={columnWidths.data} onResize={(width) => handleResize('data', width)} canResize={true}>
+                <ResizableColumn width={columnWidths.data} onResize={(width) => handleResize('data', width)} canResize={true} baseColor={baseColor}>
                     <Text fontWeight="bold">Data</Text>
                 </ResizableColumn>
                 </GridItem>
             )}
             <GridItem>
-                <ResizableColumn width={columnWidths.actions} onResize={(width) => handleResize('actions', width)} canResize={false}>
+                <ResizableColumn width={columnWidths.actions} onResize={(width) => handleResize('actions', width)} canResize={false} baseColor={baseColor}>
                 <Text fontWeight="bold">Actions</Text>
                 </ResizableColumn>
             </GridItem>
@@ -276,18 +307,18 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         return (
             <Box 
             key={resume.id}
-            borderWidth="1px" 
+            borderWidth={isSelected ? '4px' : '2px'}
             borderRadius="lg" 
             overflow="hidden"
-            padding="4"
+            padding={isSelected ? '10px' : '12px'}
             marginTop='1'
-            background="white"
+            background={bgColor}
             boxShadow="md"
             position="relative"
             cursor="pointer"
             transition="all 0.3s"
-            _hover={{ background: 'blue.200'}}
-            borderColor={isSelected ? 'blue.500' : 'gray.200'}
+            _hover={{ transform: 'translateY(-1px)', background: baseColor, boxShadow: 'lg'}}
+            borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
             onClick={() => toggleResume(resume.id)}
             >
             <Grid templateColumns={
@@ -325,7 +356,9 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
                 )}
                 <GridItem zIndex='5'>
                 <Button
-                    colorScheme="blue"
+                    // colorScheme="blue"
+                    backgroundColor='blue.500'
+                    color='white'
                     size="sm"
                     onClick={(e) => {
                     e.stopPropagation();
