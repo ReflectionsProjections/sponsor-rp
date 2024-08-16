@@ -1,5 +1,6 @@
 import React from 'react';
-import { SimpleGrid, Box, Text, Image, VStack, Checkbox, useToast } from '@chakra-ui/react';
+import { SimpleGrid, Box, Text, Image, VStack, Checkbox, useToast, Tooltip } from '@chakra-ui/react';
+import { MdOpenInNew } from "react-icons/md";
 import axios from 'axios';
 import { Config } from '../config';
 
@@ -56,6 +57,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
             return (
                 <Box 
                     key={resume.id} 
+                    onClick={() => toggleResume(resume.id)}
                     borderWidth="3px" 
                     borderRadius="lg" 
                     overflow="hidden"
@@ -69,7 +71,12 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                     _hover={{ transform: 'scale(1.05)', borderColor: 'black', borderWidth: '3px'}}
                     //   _hover={{ borderColor: 'black', borderWidth: '2px' }}
                     >
-                    <Box 
+                    <Tooltip label='Open Resume' fontSize='md'>
+                      <Box padding='2px' borderRadius='5px' bg="transparent" _hover={{ bg: 'blue.300' }} transition="background-color 0.3s ease" position="absolute" top="2" right="2" onClick={(e) => {e.stopPropagation(); openResume(resume.id);}}>
+                          <MdOpenInNew size={30} />
+                      </Box>
+                    </Tooltip>
+                    {/* <Box 
                         position="relative"
                         onClick={() => openResume(resume.id)}
                         transition='all 0.3s ease-in-out'
@@ -104,8 +111,8 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                         >
                             OPEN
                         </Box>
-                    </Box>
-                    <Box width='108%' height='30%' onClick={() => toggleResume(resume.id)}>
+                    </Box> */}
+                    <Box width='108%' height='30%'>
                         <VStack align="start" mt="4">
                             <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
                             <Text color="gray.500" fontSize="sm">{resume.major}</Text>

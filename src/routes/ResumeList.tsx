@@ -306,20 +306,20 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         const isSelected = selectedResumes.includes(resume.id);
         return (
             <Box 
-            key={resume.id}
-            borderWidth={isSelected ? '4px' : '2px'}
-            borderRadius="lg" 
-            overflow="hidden"
-            padding={isSelected ? '10px' : '12px'}
-            marginTop='1'
-            background={bgColor}
-            boxShadow="md"
-            position="relative"
-            cursor="pointer"
-            transition="all 0.3s"
-            _hover={{ transform: 'translateY(-1px)', background: baseColor, boxShadow: 'lg'}}
-            borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
-            onClick={() => toggleResume(resume.id)}
+              key={resume.id}
+              borderWidth={isSelected ? '4px' : '2px'}
+              borderRadius="lg" 
+              overflow="hidden"
+              padding={isSelected ? '10px' : '12px'}
+              marginTop='1'
+              background={bgColor}
+              boxShadow="md"
+              position="relative"
+              cursor="pointer"
+              transition="all 0.3s linear"
+              _hover={{ transform: 'translateY(-1px)', background: baseColor, boxShadow: 'lg'}}
+              borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
+              onClick={() => toggleResume(resume.id)}
             >
             <Grid templateColumns={
                 isLargerThan700
