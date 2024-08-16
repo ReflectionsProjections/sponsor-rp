@@ -2,6 +2,8 @@ import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorMode, useColorModeValue, FormControl, Select } from '@chakra-ui/react';
 import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
+import MultiSelectDropdown from "../components/MultiSelectDropdown";
+import { majors } from "../components/majors";
 import { BsGrid, BsList, BsDownload } from "react-icons/bs";
 import { BiSelectMultiple } from "react-icons/bi";
 import { TiDocumentDelete } from "react-icons/ti";
@@ -62,8 +64,12 @@ export function ResumeBook() {
     const [isMobile, setIsMobile] = useState(false);
     const [gradYear, setGradYear] = useState("");
     const [major, setMajor] = useState("");
-    const viewColor = useColorModeValue("200","700")
-    const selectViewColor = useColorModeValue("gray.300","gray.600")
+    const viewColor = useColorModeValue("200","700");
+    const selectViewColor = useColorModeValue("gray.300","gray.600");
+
+    const years = ["2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036"];
+    const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
+    const [selectedYears, setSelectedYears] = useState<string[]>([]);
 
     const showToast = (message: string) => {
         toast({
@@ -159,7 +165,7 @@ export function ResumeBook() {
     }
 
     const getResumes = async () => {
-        // localStorage.setItem("jwt", '');
+        localStorage.setItem("jwt", '');
         const jwt = localStorage.getItem("jwt");
 
         const requestBody = {
@@ -241,7 +247,7 @@ export function ResumeBook() {
     
     return (
         <ChakraProvider>
-            <Flex h={16} alignItems={'center'} justifyContent={'space-between'} padding='10px'>
+            <Flex h={16} alignItems={'center'} justifyContent={'space-between'} padding='10px' transition="background-color 0.3s ease, color 0.3s ease">
                 {/* <IconButton
                     size={'lg'}
                     icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
@@ -263,16 +269,39 @@ export function ResumeBook() {
                 <Text color='white'>Resume Book</Text>
                 <Flex alignItems={'center'}>
                     <IconButton
+                        color='white'
+                        aria-label='List View'
+                        icon={<Icon as={BsList} boxSize={6} />}
+                        onClick={() => setShowList(true)}
+                        _hover={{ border:'1px solid gray'}}
+                        mr={2}
+                        backgroundColor='transparent'//gray.'+(parseInt(viewColor)-100) : 'gray.'+viewColor}
+                        border={showList ? '1px solid white' : '1px solid transparent'}
+                        transition="border-color 0.3s ease"
+                    />
+                    <IconButton
+                        color='white'
+                        aria-label='Grid View'
+                        icon={<Icon as={BsGrid} boxSize={6} />}
+                        onClick={() => setShowList(false)}
+                        _hover={{ border:'1px solid gray'}}
+                        backgroundColor='transparent'//{showList ? 'gray.'+viewColor : 'gray.'+(parseInt(viewColor)-100)}
+                        border={showList ? '1px solid transparent' : '1px solid white'}
+                        transition="border-color 0.3s ease"
+                    />
+                    <IconButton
                         isRound={true}
                         fontSize='26px'
-                        mr={4}
+                        marginX={4}
                         aria-label="Toggle Light/Dark Mode"
                         icon={useColorModeValue(<FaMoon />, <FaSun />)}
                         onClick={toggleColorMode}
                         // variant="ghost"
+                        _hover={{ color:'gray.500'}}
                         bg='#0F1130'
                         color='#F7FAFC'
                         size="sm"
+                        transition="color 0.3s ease, background-color 0.3s ease"
                     />
                     <Menu>
                     <MenuButton
@@ -298,59 +327,46 @@ export function ResumeBook() {
                     </Menu>
                 </Flex>
                 </Flex>
-            <Box bg={useColorModeValue("gray.200","gray.700")} p={4}>
+            <Box bg={useColorModeValue("gray.200","gray.700")} p={4} transition="background-color 0.3s ease, color 0.3s ease">
                 <Flex justify="space-between" align="center">
                     {/* <Flex align="center"></Flex> */}
+                    <Flex align='flex-start' minWidth='150px' alignItems='center'>
+                        <MultiSelectDropdown
+                            id="major-dropdown"
+                            width='70%'
+                            options={majors}
+                            selectedOptions={selectedMajors}
+                            onSelectionChange={(newSelectedMajors) => setSelectedMajors(newSelectedMajors)}
+                            baseColor={viewColor}
+                        />
+                        <MultiSelectDropdown
+                            id="year-dropdown"
+                            width='30%'
+                            options={years}
+                            selectedOptions={selectedYears}
+                            onSelectionChange={(newSelectedYears) => setSelectedYears(newSelectedYears)}
+                            baseColor={viewColor}
+                        />
                     
-                    <Flex align='flex-start'>
-                        <IconButton
-                            color={useColorModeValue('black','white')}
-                            aria-label='List View'
-                            icon={<Icon as={BsList} boxSize={6} />}
-                            onClick={() => setShowList(true)}
-                            _hover={{ border:'1px solid black'}}
-                            mr={2}
-                            backgroundColor={showList ? 'gray.'+(parseInt(viewColor)-100) : 'gray.'+viewColor}
-                            border={showList ? '1px solid black' : '1px solid gray.200'}
-                        />
-                        <IconButton
-                            color={useColorModeValue('black','white')}
-                            aria-label='Grid View'
-                            icon={<Icon as={BsGrid} boxSize={6} />}
-                            onClick={() => setShowList(false)}
-                            _hover={{ border:'1px solid black'}}
-                            backgroundColor={showList ? 'gray.'+viewColor : 'gray.'+(parseInt(viewColor)-100)}
-                            border={showList ? '1px solid gray.200' : '1px solid black'}
-                        />
-                        <FormControl ml={5}>
+                        {/* <FormControl ml={5}>
                             <Select placeholder="Select Grad Year" onChange={handleGradYearChange}>
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
                             <option value="2024">2024</option>
                             <option value="2025">2025</option>
                             </Select>
-                        </FormControl>
-
-                        <FormControl ml={5}>
-                            <Select placeholder="Select Major" onChange={handleMajorChange}>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Electrical Engineering">Electrical Engineering</option>
-                            <option value="Mechanical Engineering">Mechanical Engineering</option>
-                            <option value="Civil Engineering">Civil Engineering</option>
-                            </Select>
-                        </FormControl>
-    
+                        </FormControl> */}
                     </Flex>
                     <Flex>
 
-                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? 'salmon' : 'blue.300'} color={useColorModeValue('white','black')} border='1px solid transparent' _hover={{ border:'1px solid black'}}>
+                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? 'salmon' : 'blue.300'} color={'white'} border='1px solid transparent' _hover={{ border:'1px solid black'}} transition="background-color 0.3s ease, color 0.3s ease">
                             {isMobile ? (
                                 selectedResumes.length === filteredResumes.length ? <TiDocumentDelete/> : <BiSelectMultiple/>
                             ) : (
                                 selectedResumes.length === filteredResumes.length ? 'Deselect All' : 'Select All'
                             )}
                         </Button>
-                        <Button mr={2} onClick={downloadResumes} border='1px solid transparent' _hover={{ border:'1px solid black'}} backgroundColor={parseInt(viewColor) < 500 ? 'gray.'+(parseInt(viewColor)+300): 'gray.'+(parseInt(viewColor)-200)} color={useColorModeValue('white','black')} isDisabled={selectedResumes.length < 1}>
+                        <Button mr={2} onClick={downloadResumes} border='1px solid transparent' _hover={{ border:'1px solid black'}} backgroundColor={parseInt(viewColor) < 500 ? 'gray.'+(parseInt(viewColor)+300): 'gray.'+(parseInt(viewColor)-200)} color={'white'} isDisabled={selectedResumes.length < 1} transition="background-color 0.3s ease, color 0.3s ease">
                             {isMobile ? <BsDownload/> : 'Download'}
                         </Button>
                         {/* <Button>Button 3</Button> */}
