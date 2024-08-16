@@ -95,7 +95,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
         <PopoverTrigger>
           <Box>
             <HStack
-              onClick={() => setIsOpen(!isOpen)}
+            //   onClick={() => setIsOpen(!isOpen)}
               p={2}
               border="1px solid"
               borderColor="gray.300"
@@ -116,7 +116,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
                 variant="unstyled"
                 flex="1"
                 placeholder={selectedOptions.length === 0 ? 'Select options' : ''}
-                onFocus={() => setIsOpen(true)}
+                // onFocus={() => setIsOpen(true)}
                 onChange={(e) => {
                   setQuery(e.target.value);
                   resetFilter();
@@ -128,7 +128,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
             </HStack>
           </Box>
         </PopoverTrigger>
-        <PopoverContent bgColor={bgColor} minWidth='200px' width='50vw' maxWidth='90vw'>
+        <PopoverContent bgColor={bgColor} minWidth='200px' width={width} maxWidth='90vw'>
           <PopoverArrow />
           <PopoverBody>
             <List onMouseDown={(event) => { event.preventDefault(); }}>

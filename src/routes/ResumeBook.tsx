@@ -333,7 +333,7 @@ export function ResumeBook() {
                     <Flex align='flex-start' minWidth='150px' alignItems='center'>
                         <MultiSelectDropdown
                             id="major-dropdown"
-                            width='70%'
+                            width='auto'
                             options={majors}
                             selectedOptions={selectedMajors}
                             onSelectionChange={(newSelectedMajors) => setSelectedMajors(newSelectedMajors)}
