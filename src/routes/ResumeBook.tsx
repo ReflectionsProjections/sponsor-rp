@@ -256,7 +256,7 @@ export function ResumeBook() {
                     onClick={isOpen ? onClose : onOpen}
                 /> */}
                 <HStack spacing={8} alignItems={'center'}>
-                    <Flex align="center" mr={5} maxWidth={50}>
+                    <Flex align="center" mr={2} maxWidth={50}>
                     <Image
                         src="/2024_rp_logo.svg"
                         minHeight={50}
@@ -338,6 +338,7 @@ export function ResumeBook() {
                             selectedOptions={selectedMajors}
                             onSelectionChange={(newSelectedMajors) => setSelectedMajors(newSelectedMajors)}
                             baseColor={viewColor}
+                            placeholderText='Select Major(s)'
                         />
                         <MultiSelectDropdown
                             id="year-dropdown"
@@ -346,6 +347,7 @@ export function ResumeBook() {
                             selectedOptions={selectedYears}
                             onSelectionChange={(newSelectedYears) => setSelectedYears(newSelectedYears)}
                             baseColor={viewColor}
+                            placeholderText='Select Year(s)'
                         />
                     
                         {/* <FormControl ml={5}>

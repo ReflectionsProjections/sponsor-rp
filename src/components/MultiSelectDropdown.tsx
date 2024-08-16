@@ -25,9 +25,10 @@ interface MultiSelectDropdownProps {
   selectedOptions: string[];
   onSelectionChange: (selected: string[]) => void;
   baseColor: string;
+  placeholderText?: string | null;
 }
 
-function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionChange, baseColor }: MultiSelectDropdownProps) {
+function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionChange, baseColor, placeholderText='Select' }: MultiSelectDropdownProps) {
   const [query, setQuery] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
   const [filteredOptions, setFilteredOptions] = useState<string[]>(options.slice(0, Config.MAX_DROPDOWN_OPTIONS));
@@ -115,7 +116,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
                 value={query}
                 variant="unstyled"
                 flex="1"
-                placeholder={selectedOptions.length === 0 ? 'Select options' : ''}
+                placeholder={selectedOptions.length === 0 ? `${placeholderText}` : ''}
                 // onFocus={() => setIsOpen(true)}
                 onChange={(e) => {
                   setQuery(e.target.value);
