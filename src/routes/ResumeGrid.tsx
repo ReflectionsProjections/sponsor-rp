@@ -115,7 +115,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                     <Box width='108%' height='30%'>
                         <VStack align="start" mt="4">
                             <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-                            <Text color="gray.500" fontSize="sm">{resume.major}</Text>
+                            <Text color="gray.500" fontSize="sm" mr='20px'>{resume.major}</Text>
                             <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
                         </VStack>
                         {/* <Checkbox 

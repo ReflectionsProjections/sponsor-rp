@@ -62,8 +62,6 @@ export function ResumeBook() {
     const [showList, setShowList] = useState(true);
     const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
     const [isMobile, setIsMobile] = useState(false);
-    const [gradYear, setGradYear] = useState("");
-    const [major, setMajor] = useState("");
     const viewColor = useColorModeValue("200","700");
     const selectViewColor = useColorModeValue("gray.300","gray.600");
 
@@ -82,25 +80,14 @@ export function ResumeBook() {
 
     const filterResumes = useCallback(() => {
         let filtered = resumes;
-        if (gradYear) {
-            filtered = filtered.filter(resume => resume.graduationYear === gradYear);
+        if (selectedYears.length > 0) {
+            filtered = filtered.filter(resume => selectedYears.includes(resume.graduationYear));
         }
-        if (major) {
-            filtered = filtered.filter(resume => resume.major === major);
+        if (selectedMajors.length > 0) {
+            filtered = filtered.filter(resume => selectedMajors.includes(resume.major));
         }
         setFilteredResumes(filtered);
-    }, [gradYear, major, resumes]); // Add empty array as second argument
-
-    const handleGradYearChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        const value = event.target.value;
-        setGradYear(value);
-    };
-    
-    const handleMajorChange = (event: ChangeEvent<HTMLSelectElement>) => {
-        const value = event.target.value;
-        setMajor(value);
-    };
-
+    }, [selectedYears, selectedMajors, resumes]);
   
     const toggleResume = (id: string) => {
         setSelectedResumes((prev) =>
@@ -243,7 +230,7 @@ export function ResumeBook() {
 
     useEffect(() => {
         filterResumes();
-    }, [filterResumes, gradYear, major]);
+    }, [filterResumes, selectedYears, selectedMajors]);
     
     return (
         <ChakraProvider>
@@ -329,7 +316,6 @@ export function ResumeBook() {
                 </Flex>
             <Box bg={useColorModeValue("gray.200","gray.700")} p={4} transition="background-color 0.3s ease, color 0.3s ease">
                 <Flex justify="space-between" align="center">
-                    {/* <Flex align="center"></Flex> */}
                     <Flex align='flex-start' minWidth='150px' alignItems='center'>
                         <MultiSelectDropdown
                             id="major-dropdown"
@@ -349,15 +335,7 @@ export function ResumeBook() {
                             baseColor={viewColor}
                             placeholderText='Select Year(s)'
                         />
-                    
-                        {/* <FormControl ml={5}>
-                            <Select placeholder="Select Grad Year" onChange={handleGradYearChange}>
-                            <option value="2022">2022</option>
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            </Select>
-                        </FormControl> */}
+
                     </Flex>
                     <Flex>
 
