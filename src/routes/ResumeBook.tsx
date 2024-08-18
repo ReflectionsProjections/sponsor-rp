@@ -19,6 +19,7 @@ interface Resume {
     imageUrl: string;
     major: string;
     graduationYear: string;
+    jobInterest: Array<string>;
 }
 
 interface ResumeLink {
@@ -30,6 +31,7 @@ interface ResumeIDs {
     name: string
     major: string
     graduation: string
+    jobInterest: Array<string>
 }
 
 
@@ -66,8 +68,10 @@ export function ResumeBook() {
     const selectViewColor = useColorModeValue("gray.300","gray.600");
 
     const years = ["2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036"];
+    const jobInterests = ["summer internship", "fall internship", "spring internship", "full time"];
     const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
     const [selectedYears, setSelectedYears] = useState<string[]>([]);
+    const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>([]);
 
     const showToast = (message: string) => {
         toast({
@@ -86,8 +90,11 @@ export function ResumeBook() {
         if (selectedMajors.length > 0) {
             filtered = filtered.filter(resume => selectedMajors.includes(resume.major));
         }
+        if (selectedJobInterests.length > 0) {
+            filtered = filtered.filter(resume => resume.jobInterest.some(job => selectedJobInterests.includes(job)));
+        }
         setFilteredResumes(filtered);
-    }, [selectedYears, selectedMajors, resumes]);
+    }, [selectedYears, selectedMajors, selectedJobInterests, resumes]);
   
     const toggleResume = (id: string) => {
         setSelectedResumes((prev) =>
@@ -164,6 +171,7 @@ export function ResumeBook() {
                 { name: 1 },
                 { major: 1 },
                 { graduation: 1 },
+                { jobInterest: 1 },
                 { university: 1 },
                 { dietaryRestrictions: 1 },
                 { hasResume: 1 }
@@ -183,13 +191,13 @@ export function ResumeBook() {
           
         axios.post(Config.API_BASE_URL + "/registration/filter", requestBody, {headers})
         .then(function (response) {
-            // console.log(response.data)
-            const fetchedResumes = response.data.map((item: ResumeIDs) => ({
+            const fetchedResumes = response.data.registrants.map((item: ResumeIDs) => ({
                 id: item.userId,
                 name: item.name,
                 imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png',
                 major: item.major,
-                graduationYear: item.graduation
+                graduationYear: item.graduation,
+                jobInterest: item.jobInterest
             }));
     
             // Use a Set to ensure unique resumes
@@ -230,7 +238,7 @@ export function ResumeBook() {
 
     useEffect(() => {
         filterResumes();
-    }, [filterResumes, selectedYears, selectedMajors]);
+    }, [filterResumes, selectedYears, selectedMajors, selectedJobInterests]);
     
     return (
         <ChakraProvider>
@@ -328,12 +336,21 @@ export function ResumeBook() {
                         />
                         <MultiSelectDropdown
                             id="year-dropdown"
-                            width='30%'
+                            width='35%'
                             options={years}
                             selectedOptions={selectedYears}
                             onSelectionChange={(newSelectedYears) => setSelectedYears(newSelectedYears)}
                             baseColor={viewColor}
                             placeholderText='Select Year(s)'
+                        />
+                        <MultiSelectDropdown
+                            id="job-dropdown"
+                            width='35%'
+                            options={jobInterests}
+                            selectedOptions={selectedJobInterests}
+                            onSelectionChange={(newSelectedJobInterests) => setSelectedJobInterests(newSelectedJobInterests)}
+                            baseColor={viewColor}
+                            placeholderText='Select Job Interest(s)'
                         />
 
                     </Flex>

@@ -99,7 +99,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
             //   onClick={() => setIsOpen(!isOpen)}
               p={2}
               border="1px solid"
-              borderColor="gray.300"
+              borderColor={parseInt(baseColor) > 500 ? `gray.600` : `gray.400`}
               borderRadius="md"
               wrap="wrap"
               spacing={1}
@@ -107,7 +107,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
             >
               {selectedOptions.map((option) => (
                 <Tag key={option} size="sm" borderRadius="full" variant="solid" colorScheme="teal">
-                  <TagLabel>{option}</TagLabel>
+                  <TagLabel>{option.toUpperCase()}</TagLabel>
                   <TagCloseButton onClick={() => handleRemove(option)} />
                 </Tag>
               ))}
@@ -142,7 +142,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
                   borderRadius="4px"
                   padding="8px"
                 >
-                  {option}
+                  {option.toUpperCase()}
                 </ListItem>
               ))}
             </List>
