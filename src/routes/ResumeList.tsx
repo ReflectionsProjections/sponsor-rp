@@ -307,17 +307,20 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         return (
             <Box 
               key={resume.id}
-              borderWidth={isSelected ? '4px' : '2px'}
+              borderWidth='2px'
+              padding='10px'
+              background={isSelected ? 'blue.'+baseColor : bgColor}
+              // borderWidth={isSelected ? '4px' : '2px'}
+              // padding={isSelected ? '10px' : '12px'}
+              // background={bgColor}
               borderRadius="lg" 
               overflow="hidden"
-              padding={isSelected ? '10px' : '12px'}
               marginTop='1'
-              background={bgColor}
               boxShadow="md"
               position="relative"
               cursor="pointer"
-              transition="all 0.3s linear"
-              _hover={{ transform: 'translateY(-1px)', background: baseColor, boxShadow: 'lg'}}
+              transition="all 0.2s ease"
+              _hover={{ background: isSelected ? 'blue.'+(parseInt(baseColor)+100) : 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor)-100 : parseInt(baseColor)+100), boxShadow: 'lg'}}
               borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
               onClick={() => toggleResume(resume.id)}
             >

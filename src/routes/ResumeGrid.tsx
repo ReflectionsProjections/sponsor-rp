@@ -21,6 +21,7 @@ interface ResumeGridProps {
 
 const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggleResume, baseColor }) => {
 
+  const bgColor = parseInt(baseColor) < 500 ? "gray."+(parseInt(baseColor)-100) : "gray."+(100+parseInt(baseColor))
   const toast = useToast();
   
   const showToast = (message: string) => {
@@ -62,13 +63,14 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                     borderRadius="lg" 
                     overflow="hidden"
                     padding="4"
-                    background={isSelected ? 'blue.200' : 'gray.'+baseColor}
+                    // background={isSelected ? 'blue.200' : 'gray.'+baseColor}
                     boxShadow="md"
                     position="relative"
                     cursor="pointer"
                     borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
                     transition='all 0.2s'
-                    _hover={{ transform: 'scale(1.05)', borderColor: 'black', borderWidth: '3px'}}
+                    background={isSelected ? 'blue.'+baseColor : bgColor}
+                    _hover={{ background: isSelected ? 'blue.'+baseColor : 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor)-100 : parseInt(baseColor)+100), transform: 'scale(1.05)', borderColor: 'black', borderWidth: '3px'}}
                     //   _hover={{ borderColor: 'black', borderWidth: '2px' }}
                     >
                     <Tooltip label='Open Resume' fontSize='md'>

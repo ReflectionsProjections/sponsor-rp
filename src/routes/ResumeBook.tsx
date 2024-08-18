@@ -324,7 +324,7 @@ export function ResumeBook() {
                 </Flex>
             <Box bg={useColorModeValue("gray.200","gray.700")} p={4} transition="background-color 0.3s ease, color 0.3s ease">
                 <Flex justify="space-between" align="center">
-                    <Flex align='flex-start' minWidth='150px' alignItems='center'>
+                    <Flex align='flex-start' minWidth='150px' alignItems='center' gap={'0.5vw'}>
                         <MultiSelectDropdown
                             id="major-dropdown"
                             width='auto'
