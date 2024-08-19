@@ -1,6 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, Text, Checkbox, VStack, Grid, GridItem, useMediaQuery, Button, useToast, useColorModeValue } from '@chakra-ui/react';
+import { Box, Text, Checkbox, VStack, Grid, GridItem, useMediaQuery, Button, useToast, useColorModeValue, HStack } from '@chakra-ui/react';
 import { MdOpenInNew } from "react-icons/md";
+import ResumeListBox from './ResumeListBox';
 import axios from 'axios';
 import { Config } from '../config';
 
@@ -127,8 +128,8 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
           checkbox: 50,
           name: 475,
           major: 500,
-          graduationYear: 550,
-          actions: 150,
+          graduationYear: 450,
+          actions: 250,
           data: 300,
         });
     } else if (isLargerThan1550) {
@@ -136,8 +137,8 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
           checkbox: 50,
           name: 425,
           major: 400,
-          graduationYear: 400,
-          actions: 150,
+          graduationYear: 300,
+          actions: 250,
           data: 300,
         });
     } else if (isLargerThan1280) {
@@ -145,17 +146,17 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         checkbox: 50,
         name: 375,
         major: 300,
-        graduationYear: 350,
-        actions: 100,
+        graduationYear: 200,
+        actions: 250,
         data: 300,
       });
     } else if (isLargerThan960) {
       setColumnWidths({
         checkbox: 50,
         name: 175,
-        major: 300,
+        major: 250,
         graduationYear: 150,
-        actions: 150,
+        actions: 225,
         data: 300,
       });
     } else if (isLargerThan700) {
@@ -303,77 +304,158 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
       )} */}
 
     {resumes.map((resume) => {
-        const isSelected = selectedResumes.includes(resume.id);
         return (
-            <Box 
-              key={resume.id}
-              borderWidth='2px'
-              padding='10px'
-              background={isSelected ? 'blue.'+baseColor : bgColor}
-              // borderWidth={isSelected ? '4px' : '2px'}
-              // padding={isSelected ? '10px' : '12px'}
-              // background={bgColor}
-              borderRadius="lg" 
-              overflow="hidden"
-              marginTop='1'
-              boxShadow="md"
-              position="relative"
-              cursor="pointer"
-              transition="all 0.2s ease"
-              _hover={{ background: isSelected ? 'blue.'+(parseInt(baseColor)+100) : 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor)-100 : parseInt(baseColor)+100), boxShadow: 'lg'}}
-              borderColor={isSelected ? 'blue.500' : 'gray.'+baseColor}
-              onClick={() => toggleResume(resume.id)}
-            >
-            <Grid templateColumns={
-                isLargerThan700
-                ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-                : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
-            } gap={4} alignItems="center">
-                <GridItem>
-                <Checkbox 
-                    size="lg"
-                    isChecked={isSelected}
-                    onChange={() => toggleResume(resume.id)}
-                />
-                </GridItem>
-                {isLargerThan700 ? (
-                <>
-                    <GridItem>
-                    <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-                    </GridItem>
-                    <GridItem>
-                    <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-                    </GridItem>
-                    <GridItem>
-                    <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
-                    </GridItem>
-                </>
-                ) : (
-                <GridItem>
-                    <VStack align="start" spacing={1}>
-                    <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-                    <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-                    <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
-                    </VStack>
-                </GridItem>
-                )}
-                <GridItem zIndex='5'>
-                <Button
-                    // colorScheme="blue"
-                    backgroundColor='blue.500'
-                    color='white'
-                    size="sm"
-                    onClick={(e) => {
-                    e.stopPropagation();
-                    openResume(resume.id);
-                    }}
-                >
-                    {isLargerThan550 ? 'Open Resume' : <MdOpenInNew />}
-                </Button>
-                </GridItem>
-            </Grid>
-            </Box>
+            <ResumeListBox resume={resume} isSelected={selectedResumes.includes(resume.id)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} isLargerThan550={isLargerThan550} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
         );
+        // const isSelected = selectedResumes.includes(resume.id);
+        // const [isExpanded, setIsExpanded] = useState(false);
+        // const isExpanded = true;
+
+        // const toggleExpand = () => {
+        //   setIsExpanded(!isExpanded);
+        // };
+        // return (
+        //   <Box 
+        //   key={resume.id}
+        //   borderWidth='2px'
+        //   padding='10px'
+        //   background={isSelected ? 'blue.' + baseColor : bgColor}
+        //   borderRadius="lg" 
+        //   overflow="hidden"
+        //   marginTop='1'
+        //   boxShadow="md"
+        //   position="relative"
+        //   cursor="pointer"
+        //   transition="all 0.2s ease"
+        //   _hover={{ background: isSelected ? 'blue.' + (parseInt(baseColor) + 100) : 'gray.' + (parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100), boxShadow: 'lg' }}
+        //   borderColor={isSelected ? 'blue.500' : 'gray.' + baseColor}
+        //   onClick={() => toggleResume(resume.id)}
+        // >
+        //   <Grid templateColumns={
+        //       isLargerThan700
+        //       ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
+        //       : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
+        //   } gap={4} alignItems="center">
+        //     <GridItem>
+        //       <Checkbox 
+        //         size="lg"
+        //         isChecked={isSelected}
+        //         onChange={() => toggleResume(resume.id)}
+        //       />
+        //     </GridItem>
+        //     {isLargerThan700 ? (
+        //       <>
+        //         <GridItem>
+        //           <HStack spacing={2}>
+        //             <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
+        //             <Button
+        //               backgroundColor='blue.500'
+        //               color='white'
+        //               size="sm"
+        //               onClick={(e) => {
+        //                 e.stopPropagation();
+        //                 openResume(resume.id);
+        //               }}
+        //             >
+        //               {isLargerThan550 ? '>' : <MdOpenInNew />}
+        //             </Button>
+        //           </HStack>
+        //         </GridItem>
+        //         <GridItem>
+        //           <Text color="gray.500" fontSize="sm">{resume.major}</Text>
+        //         </GridItem>
+        //         <GridItem>
+        //           <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
+        //         </GridItem>
+        //       </>
+        //     ) : (
+        //       <GridItem>
+        //         <VStack align="start" spacing={1}>
+        //           <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
+        //           <Text color="gray.500" fontSize="sm">{resume.major}</Text>
+        //           <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
+        //         </VStack>
+        //       </GridItem>
+        //     )}
+        //     <GridItem zIndex='5'>
+        //       <HStack spacing={2}>
+        //         <Button
+        //           backgroundColor='blue.500'
+        //           color='white'
+        //           size="sm"
+        //           onClick={(e) => {
+        //             e.stopPropagation();
+        //             openResume(resume.id);
+        //           }}
+        //         >
+        //           {isLargerThan550 ? 'Open Resume' : <MdOpenInNew />}
+        //         </Button>
+        //         <Button
+        //           backgroundColor='blue.500'
+        //           color='white'
+        //           size="sm"
+        //           onClick={(e) => {
+        //             e.stopPropagation();
+        //             toggleExpand(); // Toggle the expanded state
+        //           }}
+        //         >
+        //           {isLargerThan550 ? 'Portfolio Links' : <MdOpenInNew />}
+        //         </Button>
+        //       </HStack>
+        //     </GridItem>
+        //   </Grid>
+          
+        //   {/* Conditionally render additional buttons if expanded */}
+        //   {isExpanded && (
+        //     <HStack spacing={2} marginTop={2}>
+        //       <Button
+        //         backgroundColor='blue.500'
+        //         color='white'
+        //         size="sm"
+        //         onClick={(e) => {
+        //           e.stopPropagation();
+        //           // Handle additional button 1 click
+        //         }}
+        //       >
+        //         Additional Button 1
+        //       </Button>
+        //       <Button
+        //         backgroundColor='blue.500'
+        //         color='white'
+        //         size="sm"
+        //         onClick={(e) => {
+        //           e.stopPropagation();
+        //           // Handle additional button 2 click
+        //         }}
+        //       >
+        //         Additional Button 2
+        //       </Button>
+        //       <Button
+        //         backgroundColor='blue.500'
+        //         color='white'
+        //         size="sm"
+        //         onClick={(e) => {
+        //           e.stopPropagation();
+        //           // Handle additional button 3 click
+        //         }}
+        //       >
+        //         Additional Button 3
+        //       </Button>
+        //       <Button
+        //         backgroundColor='blue.500'
+        //         color='white'
+        //         size="sm"
+        //         onClick={(e) => {
+        //           e.stopPropagation();
+        //           // Handle additional button 4 click
+        //         }}
+        //       >
+        //         Additional Button 4
+        //       </Button>
+        //     </HStack>
+        //   )}
+        // </Box>
+        // );
         })}
     </VStack>
   );

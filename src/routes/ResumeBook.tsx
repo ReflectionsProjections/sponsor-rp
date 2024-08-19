@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorMode, useColorModeValue, FormControl, Select } from '@chakra-ui/react';
 import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
@@ -16,10 +16,10 @@ import { FaMoon, FaSun } from 'react-icons/fa';
 interface Resume {
     id: string;
     name: string;
-    imageUrl: string;
     major: string;
     graduationYear: string;
     jobInterest: Array<string>;
+    portfolios?: Array<string>;
 }
 
 interface ResumeLink {
@@ -32,6 +32,7 @@ interface ResumeIDs {
     major: string
     graduation: string
     jobInterest: Array<string>
+    portfolios?: Array<string>
 }
 
 
@@ -65,7 +66,7 @@ export function ResumeBook() {
     const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
     const [isMobile, setIsMobile] = useState(false);
     const viewColor = useColorModeValue("200","700");
-    const selectViewColor = useColorModeValue("gray.300","gray.600");
+    // const selectViewColor = useColorModeValue("gray.300","gray.600");
 
     const years = ["2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036"];
     const jobInterests = ["summer internship", "fall internship", "spring internship", "full time"];
@@ -194,11 +195,13 @@ export function ResumeBook() {
             const fetchedResumes = response.data.registrants.map((item: ResumeIDs) => ({
                 id: item.userId,
                 name: item.name,
-                imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png',
                 major: item.major,
                 graduationYear: item.graduation,
-                jobInterest: item.jobInterest
+                jobInterest: item.jobInterest,
+                portfolios: item.portfolios
             }));
+
+            console.log(fetchedResumes);
     
             // Use a Set to ensure unique resumes
             const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
@@ -291,7 +294,7 @@ export function ResumeBook() {
                         aria-label="Toggle Light/Dark Mode"
                         icon={useColorModeValue(<FaMoon />, <FaSun />)}
                         onClick={toggleColorMode}
-                        // variant="ghost"
+                        variant="link"
                         _hover={{ color:'gray.500'}}
                         bg='#0F1130'
                         color='#F7FAFC'

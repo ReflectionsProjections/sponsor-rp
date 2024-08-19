@@ -112,6 +112,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
                 </Tag>
               ))}
               <Input
+                autoComplete='off'
                 id={id}
                 value={query}
                 variant="unstyled"
