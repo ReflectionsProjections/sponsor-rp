@@ -6,11 +6,12 @@ import axios from 'axios';
 import { Config } from '../config';
 
 interface Resume {
-    id: string;
-    name: string;
-    imageUrl: string;
-    major: string;
-    graduationYear: string;
+  id: string;
+  name: string;
+  major: string;
+  graduationYear: string;
+  jobInterest: Array<string>;
+  portfolios?: Array<string>;
 }
 
 interface ResumeListProps {
@@ -163,9 +164,9 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
       setColumnWidths({
         checkbox: 50,
         name: 125,
-        major: 200,
-        graduationYear: 100,
-        actions: 100,
+        major: 130,
+        graduationYear: 90,
+        actions: 210,
         data: 300,
       });
     } else if (isLargerThan550) {
@@ -280,7 +281,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
                 </GridItem>
                 <GridItem>
                     <ResizableColumn width={columnWidths.graduationYear} onResize={(width) => handleResize('graduationYear', width)} canResize={true} baseColor={baseColor}>
-                    <Text fontWeight="bold">Grad Year</Text>
+                    <Text fontWeight="bold">Graduation</Text>
                     </ResizableColumn>
                 </GridItem>
                 </>
