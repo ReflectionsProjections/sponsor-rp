@@ -68,7 +68,7 @@ export function ResumeBook() {
     const viewColor = useColorModeValue("200","700");
     // const selectViewColor = useColorModeValue("gray.300","gray.600");
 
-    const years = ["2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031", "2032", "2033", "2034", "2035", "2036"];
+    const years = ["Dec 2024", "May 2025", "Dec 2025", "May 2026", "Dec 2026", "May 2027", "Dec 2027", "May 2028", "Dec 2028", "May 2029", "Dec 2029"];
     const jobInterests = ["summer internship", "fall internship", "spring internship", "full time"];
     const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
     const [selectedYears, setSelectedYears] = useState<string[]>([]);
@@ -265,7 +265,7 @@ export function ResumeBook() {
                     </Flex>
                 </HStack>
                 <Text color='white'>Resume Book</Text>
-                <Flex alignItems={'center'}>
+                <Flex alignItems={'center'} zIndex="20">
                     <IconButton
                         color='white'
                         aria-label='List View'
@@ -308,12 +308,7 @@ export function ResumeBook() {
                         variant={'link'}
                         cursor={'pointer'}
                         minW={0}>
-                        <Avatar
-                        size={'sm'}
-                        src={
-                            'https://cdn-icons-png.freepik.com/512/8742/8742495.png'
-                        }
-                        />
+                        <Avatar bg='pink.600' size={'sm'} />
                     </MenuButton>
                     <MenuList>
                         {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
