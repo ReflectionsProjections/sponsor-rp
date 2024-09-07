@@ -1,9 +1,45 @@
 import { Box, Button, Flex, HStack, Spacer, Text, Input, Center, useMediaQuery } from "@chakra-ui/react";
+import axios from "axios";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function Login() {
     const [isMedium] = useMediaQuery("(max-width: 850px)");
 	const [isSmall] = useMediaQuery("(max-width: 600px)");
 	const [isXSmall] = useMediaQuery("(max-width: 400px)");
+    const [email, setEmail] = useState(""); // State to store the email input
+    const navigate = useNavigate();
+
+    const sponsorLogin = async (email:any) => {
+        const url = "https://api.reflectionsprojections.org/auth/sponsor/login";
+      
+        try {
+          const response = await axios.post(url, { email });
+          console.log("Success:", response.data);
+      
+          if (response.data === "Created") {
+            navigate('/two-factor');
+          } else {
+            console.log("Response status:", response.status);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+      
+    
+      const handleSubmit = () => {
+        console.log("Button clicked, email:", email);  // Log button click
+        sponsorLogin(email);  // Call the function with the current email value
+      };
+    
+        // Log the input value whenever it's updated
+    const handleEmailChange = (e:any) => {
+        setEmail(e.target.value);
+        console.log("Input value:", e.target.value);  // Log the input value
+    };
+
+
     return (
         <Box>
             <Box
@@ -32,6 +68,9 @@ export function Login() {
                 <Box mt='10vh' zIndex="2">
                     <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>Enter your Email</Text>
                     <Input
+                        type="email"
+                        value={email}
+                        onChange={handleEmailChange}
                         placeholder="name@example.com"
                         width="300px"
                         mt="20px"
@@ -41,8 +80,10 @@ export function Login() {
                         borderRadius="5px"
                         _placeholder={{ color: "gray.400" }}
                     />
+                <Button onClick={() => handleSubmit()} zIndex="3">
+                    Submit
+                </Button>
                 </Box>
-
             </Flex>
         </Box>
     );

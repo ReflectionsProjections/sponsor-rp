@@ -5,6 +5,7 @@ import { Home } from "./routes/Home";
 import { Login } from "./routes/Login";
 import { ResumeBook } from "./routes/ResumeBook";
 import { ResumeAllPDF } from "./routes/ResumeAllPDF";
+import TwoFactor from "./routes/TwoFactor";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="*" element={<Page showNav={true} pageContent={<Home />} />} />
         <Route path="/resume-book" element={<Page showNav={false} pageContent={<ResumeBook />} />} />
         <Route path="/login" element={<Page showNav={true} pageContent={<Login />} />} />
+        <Route path="/two-factor" element={<Page showNav={true} pageContent={<TwoFactor />} />} />
         <Route path="/resume-book/dev" element={<Page showNav={false} pageContent={<ResumeAllPDF />} />} />
       </Routes>
     </BrowserRouter>
