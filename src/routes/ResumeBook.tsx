@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorMode, useColorModeValue, FormControl, Select } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { Box, Button, ChakraProvider, Flex, Icon, Image, IconButton, Text, HStack, Menu, MenuButton, Avatar, MenuList, MenuItem, useToast, useColorMode, useColorModeValue, Input, Center, ButtonGroup, useMediaQuery } from '@chakra-ui/react';
 import ResumeGrid from './ResumeGrid';
 import ResumeList from './ResumeList';
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
@@ -9,6 +9,7 @@ import { BiSelectMultiple } from "react-icons/bi";
 import { TiDocumentDelete } from "react-icons/ti";
 
 import axios from 'axios';
+
 import { saveAs } from 'file-saver';
 import { Config } from "../config";
 import { FaMoon, FaSun } from 'react-icons/fa';
@@ -17,6 +18,7 @@ interface Resume {
     id: string;
     name: string;
     major: string;
+    degree: string;
     graduationYear: string;
     jobInterest: Array<string>;
     portfolios?: Array<string>;
@@ -30,6 +32,7 @@ interface ResumeIDs {
     userId: string
     name: string
     major: string
+    degree: string
     graduation: string
     jobInterest: Array<string>
     portfolios?: Array<string>
@@ -59,18 +62,21 @@ export function ResumeBook() {
         // { id: '15', name: 'Pearl Krabs', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Singer', graduationYear: '2036'},
         // Add more resumes here
     // ];
-
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(1);
     const [resumes, setResumes] = useState<Resume[]>([]);
     const [filteredResumes, setFilteredResumes] = useState<Resume[]>([]);
     const [showList, setShowList] = useState(true);
     const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
     const [isMobile, setIsMobile] = useState(false);
+    const [isMediumScreen] = useMediaQuery("(min-width: 960px)");
     const viewColor = useColorModeValue("200","700");
     // const selectViewColor = useColorModeValue("gray.300","gray.600");
-
+    const degreeTypes = ["Bachelor's", "Master's", "PhD", "Professional (JD/MD)", "Other"]; 
     const years = ["Dec 2024", "May 2025", "Dec 2025", "May 2026", "Dec 2026", "May 2027", "Dec 2027", "May 2028", "Dec 2028", "May 2029", "Dec 2029"];
-    const jobInterests = ["summer internship", "fall internship", "spring internship", "full time"];
+    const jobInterests = ["SUMMER INTERNSHIP", "FALL INTERNSHIP", "SPRING INTERNSHIP", "FULL TIME"];
     const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
+    const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
     const [selectedYears, setSelectedYears] = useState<string[]>([]);
     const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>([]);
 
@@ -83,19 +89,51 @@ export function ResumeBook() {
         });
     }
 
-    const filterResumes = useCallback(() => {
-        let filtered = resumes;
-        if (selectedYears.length > 0) {
-            filtered = filtered.filter(resume => selectedYears.includes(resume.graduationYear));
+    const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newPageValue = e.target.value;
+      
+        // Allow the input to be empty (to handle backspace)
+        if (newPageValue === '') {
+          setPage(page);  // Set to a temporary state while the user is typing
+          return;
         }
-        if (selectedMajors.length > 0) {
-            filtered = filtered.filter(resume => selectedMajors.includes(resume.major));
+      
+        const newPage = Number(newPageValue);
+      
+        // Validate the new page value before setting it
+        if (newPage >= 1 && newPage <= pageSize) {
+          setPage(newPage);
         }
-        if (selectedJobInterests.length > 0) {
-            filtered = filtered.filter(resume => resume.jobInterest.some(job => selectedJobInterests.includes(job)));
+      };
+      const handleNext = () => {
+        if (page < pageSize) {
+          setPage(page + 1);
         }
-        setFilteredResumes(filtered);
-    }, [selectedYears, selectedMajors, selectedJobInterests, resumes]);
+      };
+    
+      // Function to handle the Previous button
+      const handlePrevious = () => {
+        if (page > 1) {
+          setPage(page - 1);
+        }
+      };
+
+    // const filterResumes = useCallback(() => {
+    //     let filtered = resumes;
+    //     if (selectedYears.length > 0) {
+    //         filtered = filtered.filter(resume => selectedYears.includes(resume.graduationYear?.toLowerCase()));
+    //     }
+    //     if (selectedDegrees.length > 0) {
+    //         filtered = filtered.filter(resume => selectedDegrees.includes(resume.degree?.toLowerCase()));
+    //     }
+    //     if (selectedMajors.length > 0) {
+    //         filtered = filtered.filter(resume => selectedMajors.includes(resume.major?.toLowerCase()));
+    //     }
+    //     if (selectedJobInterests.length > 0) {
+    //         filtered = filtered.filter(resume => resume.jobInterest.some(job => selectedJobInterests.includes(job.toLowerCase())));
+    //     }
+    //     setFilteredResumes(filtered);
+    // }, [selectedYears, selectedMajors, selectedDegrees, selectedJobInterests, resumes]);
   
     const toggleResume = (id: string) => {
         setSelectedResumes((prev) =>
@@ -160,24 +198,46 @@ export function ResumeBook() {
     }
 
     const getResumes = async () => {
-        localStorage.setItem("jwt", '');
         const jwt = localStorage.getItem("jwt");
 
-        const requestBody = {
-            filter: {
-                hasResume: true
-            },
-            projection: [
-                { userId: 1 },
-                { name: 1 },
-                { major: 1 },
-                { graduation: 1 },
-                { jobInterest: 1 },
-                { university: 1 },
-                { dietaryRestrictions: 1 },
-                { hasResume: 1 }
-            ]
+        const requestBody: {
+            graduations?: string[];
+            degrees?: string[];
+            majors?: string[];
+            jobInterests?: string[];
+        } = {
+            // filter: {
+            //     hasResume: true
+            // },
+            // projection: [
+            //     { userId: 1 },
+            //     { name: 1 },
+            //     { major: 1 },
+            //     { graduation: 1 },
+            //     { degree: 1},
+            //     { jobInterest: 1 },
+            //     { university: 1 },
+            //     { dietaryRestrictions: 1 },
+            //     { hasResume: 1 }
+            // ]
+            // graduations: selectedYears,
+            // degrees: selectedDegrees,
+            // majors: selectedMajors,
+            // jobInterests: selectedJobInterests
         };
+
+        if (selectedYears.length > 0) {
+            requestBody['graduations'] = [...selectedYears];
+        }
+        if (selectedDegrees.length > 0) {
+            requestBody['degrees'] = selectedDegrees;
+        }
+        if (selectedMajors.length > 0) {
+            requestBody['majors'] = selectedMajors;
+        }
+        if (selectedJobInterests.length > 0) {
+            requestBody['jobInterests'] = selectedJobInterests;
+        }
 
         const headers = {
             Authorization: jwt
@@ -187,15 +247,48 @@ export function ResumeBook() {
           
           
         const params = new URLSearchParams();
-        params.append('filter', JSON.stringify(requestBody.filter));
-        params.append('projection', JSON.stringify(requestBody.projection));
+        // params.append('filter', JSON.stringify(requestBody.filter));
+        // params.append('projection', JSON.stringify(requestBody.projection));
+        if (selectedYears.length > 0) {
+            params.append('graduations', JSON.stringify(requestBody.graduations));
+        }
+        if (selectedDegrees.length > 0) {
+            params.append('degrees', JSON.stringify(requestBody.degrees));
+        }
+        if (selectedMajors.length > 0) {
+            params.append('majors', JSON.stringify(requestBody.majors));
+        }
+        if (selectedJobInterests.length > 0) {
+            params.append('jobInterests', JSON.stringify(requestBody.jobInterests));
+        }
+        console.log(params)
+        console.log(requestBody)
+        console.log(jwt);
+
+        setResumes([]);
+        setFilteredResumes([]);
+
+        // axios.get(Config.API_BASE_URL + "/registration/filter/pagecount", { headers, params })
+        // .then(function (response) {
+        //     console.log(response.data);
+        //     setPageSize(response.data.pagecount);
+        // })
+        axios.post(Config.API_BASE_URL + "/registration/filter/pagecount", requestBody, {headers})
+        .then(function (response) {
+            console.log(response.data);
+            setPageSize(response.data.pagecount);
+            if (page > response.data.pagecount) {
+                setPage(1);
+            }
+        })
           
-        axios.post(Config.API_BASE_URL + "/registration/filter", requestBody, {headers})
+        axios.post(Config.API_BASE_URL + "/registration/filter/"+page, requestBody, {headers})
         .then(function (response) {
             const fetchedResumes = response.data.registrants.map((item: ResumeIDs) => ({
                 id: item.userId,
                 name: item.name,
                 major: item.major,
+                degree: item.degree,
                 graduationYear: item.graduation,
                 jobInterest: item.jobInterest,
                 portfolios: item.portfolios
@@ -204,9 +297,11 @@ export function ResumeBook() {
             console.log(fetchedResumes);
     
             // Use a Set to ensure unique resumes
-            const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
-            setResumes(Array.from(uniqueResumes));
-            setFilteredResumes(Array.from(uniqueResumes));
+            // const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
+            // setResumes(Array.from(uniqueResumes));
+            // setFilteredResumes(Array.from(uniqueResumes));
+            setResumes(fetchedResumes);
+            setFilteredResumes(fetchedResumes);
         })
         .catch(function (error) {
             // handle error
@@ -240,8 +335,13 @@ export function ResumeBook() {
     }, []);
 
     useEffect(() => {
-        filterResumes();
-    }, [filterResumes, selectedYears, selectedMajors, selectedJobInterests]);
+        getResumes();
+    }, [page, selectedYears, selectedDegrees, selectedMajors, selectedJobInterests]);
+
+    // useEffect(() => {
+    //     // filterResumes();
+    //     getResumes();
+    // }, []);
     
     return (
         <ChakraProvider>
@@ -266,27 +366,29 @@ export function ResumeBook() {
                 </HStack>
                 <Text color='white'>Resume Book</Text>
                 <Flex alignItems={'center'} zIndex="20">
-                    <IconButton
-                        color='white'
-                        aria-label='List View'
-                        icon={<Icon as={BsList} boxSize={6} />}
-                        onClick={() => setShowList(true)}
-                        _hover={{ border:'1px solid gray'}}
-                        mr={2}
-                        backgroundColor='transparent'//gray.'+(parseInt(viewColor)-100) : 'gray.'+viewColor}
-                        border={showList ? '1px solid white' : '1px solid transparent'}
-                        transition="border-color 0.3s ease"
-                    />
-                    <IconButton
-                        color='white'
-                        aria-label='Grid View'
-                        icon={<Icon as={BsGrid} boxSize={6} />}
-                        onClick={() => setShowList(false)}
-                        _hover={{ border:'1px solid gray'}}
-                        backgroundColor='transparent'//{showList ? 'gray.'+viewColor : 'gray.'+(parseInt(viewColor)-100)}
-                        border={showList ? '1px solid transparent' : '1px solid white'}
-                        transition="border-color 0.3s ease"
-                    />
+                    <ButtonGroup isAttached border={'1px solid darkslategray'} borderRadius={'7px'} variant="outline">
+                        <IconButton
+                            color='white'
+                            aria-label='List View'
+                            icon={<Icon as={BsList} boxSize={6} />}
+                            onClick={() => setShowList(true)}
+                            _hover={{ border:'1px solid gray'}}
+                            mr={2}
+                            backgroundColor='transparent'//gray.'+(parseInt(viewColor)-100) : 'gray.'+viewColor}
+                            border={showList ? '1px solid white' : '1px solid transparent'}
+                            transition="border-color 0.3s ease"
+                        />
+                        <IconButton
+                            color='white'
+                            aria-label='Grid View'
+                            icon={<Icon as={BsGrid} boxSize={6} />}
+                            onClick={() => setShowList(false)}
+                            _hover={{ border:'1px solid gray'}}
+                            backgroundColor='transparent'//{showList ? 'gray.'+viewColor : 'gray.'+(parseInt(viewColor)-100)}
+                            border={showList ? '1px solid transparent' : '1px solid white'}
+                            transition="border-color 0.3s ease"
+                        />
+                    </ButtonGroup>
                     <IconButton
                         isRound={true}
                         fontSize='26px'
@@ -321,7 +423,7 @@ export function ResumeBook() {
                 </Flex>
                 </Flex>
             <Box bg={useColorModeValue("gray.200","gray.700")} p={4} transition="background-color 0.3s ease, color 0.3s ease">
-                <Flex justify="space-between" align="center">
+                <Flex justify="space-between" align="center" direction={isMediumScreen ? 'row': 'column'} >
                     <Flex align='flex-start' minWidth='150px' alignItems='center' gap={'0.5vw'}>
                         <MultiSelectDropdown
                             id="major-dropdown"
@@ -330,38 +432,47 @@ export function ResumeBook() {
                             selectedOptions={selectedMajors}
                             onSelectionChange={(newSelectedMajors) => setSelectedMajors(newSelectedMajors)}
                             baseColor={viewColor}
-                            placeholderText='Select Major(s)'
+                            placeholderText='Filter Major(s)'
+                        />
+                        <MultiSelectDropdown
+                            id="degree-dropdown"
+                            width='auto'
+                            options={degreeTypes}
+                            selectedOptions={selectedDegrees}
+                            onSelectionChange={(newSelectedDegrees) => setSelectedDegrees(newSelectedDegrees)}
+                            baseColor={viewColor}
+                            placeholderText='Filter Degree(s)'
                         />
                         <MultiSelectDropdown
                             id="year-dropdown"
-                            width='35%'
+                            width='20%'
                             options={years}
                             selectedOptions={selectedYears}
                             onSelectionChange={(newSelectedYears) => setSelectedYears(newSelectedYears)}
                             baseColor={viewColor}
-                            placeholderText='Select Year(s)'
+                            placeholderText='Filter Year(s)'
                         />
                         <MultiSelectDropdown
                             id="job-dropdown"
-                            width='35%'
+                            width='20%'
                             options={jobInterests}
                             selectedOptions={selectedJobInterests}
                             onSelectionChange={(newSelectedJobInterests) => setSelectedJobInterests(newSelectedJobInterests)}
                             baseColor={viewColor}
-                            placeholderText='Select Job Interest(s)'
+                            placeholderText='Filter Job Interest(s)'
                         />
 
                     </Flex>
-                    <Flex>
+                    <Flex p={2}>
 
-                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? 'salmon' : 'blue.300'} color={'white'} border='1px solid transparent' _hover={{ border:'1px solid black'}} transition="background-color 0.3s ease, color 0.3s ease">
+                        <Button onClick={selectAllResumes} mr={2} backgroundColor={selectedResumes.length === filteredResumes.length ? 'salmon' : 'blue.300'} color={'white'} border='1px solid transparent' _hover={{ border:'1px solid black', backgroundColor: `${selectedResumes.length === filteredResumes.length ? 'red.200' : 'blue.200'}`, color: 'black'}} transition="border background-color color 0.3s ease">
                             {isMobile ? (
                                 selectedResumes.length === filteredResumes.length ? <TiDocumentDelete/> : <BiSelectMultiple/>
                             ) : (
                                 selectedResumes.length === filteredResumes.length ? 'Deselect All' : 'Select All'
                             )}
                         </Button>
-                        <Button mr={2} onClick={downloadResumes} border='1px solid transparent' _hover={{ border:'1px solid black'}} backgroundColor={parseInt(viewColor) < 500 ? 'gray.'+(parseInt(viewColor)+300): 'gray.'+(parseInt(viewColor)-200)} color={'white'} isDisabled={selectedResumes.length < 1} transition="background-color 0.3s ease, color 0.3s ease">
+                        <Button mr={2} onClick={downloadResumes} border='1px solid transparent' _hover={{ border:'1px solid black', backgroundColor: 'gray.300', color: 'black' }} backgroundColor={parseInt(viewColor) < 500 ? 'gray.'+(parseInt(viewColor)+300): 'gray.'+(parseInt(viewColor)-200)} color={'white'} isDisabled={selectedResumes.length < 1} transition="border background-color color 0.3s ease">
                             {isMobile ? <BsDownload/> : 'Download'}
                         </Button>
                         {/* <Button>Button 3</Button> */}
@@ -371,6 +482,36 @@ export function ResumeBook() {
             {
                 showList ? <ResumeList resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} /> : <ResumeGrid resumes={filteredResumes} selectedResumes={selectedResumes} toggleResume={toggleResume} baseColor={viewColor} />
             }
+            <Box>
+                <Center mt={4}>
+                    <HStack spacing={4}>
+                        <Button onClick={handlePrevious} isDisabled={page === 1}>
+                        Previous
+                        </Button>
+                        <HStack spacing={2}>
+                        <Input
+                            color='white'
+                            value={page}
+                            onChange={handlePageChange}
+                            type="number"
+                            max={pageSize}
+                            min={1}
+                            width="50px"
+                            textAlign="center"
+                        />
+                        <Text color='white'>/ {pageSize}</Text>
+                        </HStack>
+                        <Button onClick={handleNext} isDisabled={page === pageSize}>
+                        Next
+                        </Button>
+                    </HStack>
+                </Center>
+
+
+                <Text fontSize="sm" textAlign="center" color="gray.500" mt={4}>© 2024 Reflections | Projections</Text>
+
+
+            </Box>
         </ChakraProvider>
     );
 }

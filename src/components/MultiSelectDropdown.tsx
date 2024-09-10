@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Fuse from 'fuse.js';
 import {
   FormControl,
@@ -91,10 +91,10 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
   }, [query, selectedOptions, options]); // Dependencies include query, selectedOptions, and options
 
   return (
-    <FormControl zIndex="15" width={width}>
+    <FormControl width={width} zIndex="15">
       <Popover isOpen={isOpen} onClose={() => setIsOpen(false)} autoFocus={false} closeOnBlur={true}>
         <PopoverTrigger>
-          <Box>
+          <Box zIndex="15">
             <HStack
             //   onClick={() => setIsOpen(!isOpen)}
               p={2}
@@ -104,6 +104,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
               wrap="wrap"
               spacing={1}
               minHeight="40px"
+              bgColor={bgColor}
             >
               {selectedOptions.map((option) => (
                 <Tag key={option} size="sm" borderRadius="full" variant="solid" colorScheme="teal">
@@ -130,7 +131,7 @@ function MultiSelectDropdown({ id, width, options, selectedOptions, onSelectionC
             </HStack>
           </Box>
         </PopoverTrigger>
-        <PopoverContent bgColor={bgColor} minWidth='200px' width={width} maxWidth='90vw'>
+        <PopoverContent bgColor={bgColor} minWidth='200px' width={width} maxWidth='90vw' zIndex="30">
           <PopoverArrow />
           <PopoverBody>
             <List onMouseDown={(event) => { event.preventDefault(); }}>

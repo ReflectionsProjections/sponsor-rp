@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Grid, GridItem, Checkbox, HStack, VStack, Text, Button, SimpleGrid, Center } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Checkbox, VStack, Text, Button, SimpleGrid, Center } from '@chakra-ui/react';
 import { MdOpenInNew, MdList } from 'react-icons/md';
 
 interface Resume {
     id: string;
     name: string;
     major: string;
+    degree: string;
     graduationYear: string;
     jobInterest: Array<string>;
     portfolios?: Array<string>;
@@ -15,6 +16,7 @@ interface ColumnWidths {
   checkbox: number;
   name: number;
   major: number;
+  degree: number;
   graduationYear: number;
   actions: number;
   data: number;
@@ -25,7 +27,6 @@ interface ResumeComponentProps {
   isSelected: boolean;
   columnWidths: ColumnWidths;
   isLargerThan700: boolean;
-  isLargerThan550: boolean;
   toggleResume: (id: string) => void;
   openResume: (id: string) => void;
   baseColor: string;
@@ -37,7 +38,6 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
   isSelected,
   columnWidths,
   isLargerThan700,
-  isLargerThan550,
   toggleResume,
   openResume,
   baseColor,
@@ -68,7 +68,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         >
           <Grid templateColumns={
               isLargerThan700
-              ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
+              ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
               : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
           } gap={4} alignItems="center">
             <GridItem>
@@ -76,12 +76,16 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                 size="lg"
                 isChecked={isSelected}
                 onChange={() => toggleResume(resume.id)}
+                borderColor={'gray.400'}
               />
             </GridItem>
             {isLargerThan700 ? (
               <>
                 <GridItem>
                   <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
+                </GridItem>
+                <GridItem>
+                  <Text color="gray.500" fontSize="sm">{resume.degree}</Text>
                 </GridItem>
                 <GridItem>
                   <Text color="gray.500" fontSize="sm">{resume.major}</Text>
@@ -94,17 +98,19 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               <GridItem>
                 <VStack align="start" spacing={1}>
                   <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
+                  <Text color="gray.500" fontSize="sm">{resume.degree}</Text>
                   <Text color="gray.500" fontSize="sm">{resume.major}</Text>
                   <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
                 </VStack>
               </GridItem>
             )}
             <GridItem zIndex='5'>
-              <HStack spacing={2}>
+              <VStack spacing={2}>
                 <Button
                   backgroundColor='blue.500'
                   color='white'
-                  size="sm"
+                  size="md"
+                  _hover={{ color: 'black', backgroundColor: 'blue.300' }}
                   onClick={(e) => {
                     e.stopPropagation();
                     openResume(resume.id);
@@ -116,7 +122,8 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                   isDisabled={resume.portfolios?.length === 0}
                   backgroundColor='green.500'
                   color='white'
-                  size="sm"
+                  size="md"
+                  _hover={{ color: 'black', backgroundColor: 'green.300' }}
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleExpand(); // Toggle the expanded state
@@ -124,7 +131,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                 >
                   {isLargerThan700 ? 'Portfolio Links' : <MdList />}
                 </Button>
-              </HStack>
+              </VStack>
             </GridItem>
           </Grid>
           

@@ -1,6 +1,5 @@
 import React from 'react';
-import { SimpleGrid, Box, Text, Image, VStack, Checkbox, useToast, Tooltip, Center } from '@chakra-ui/react';
-import { MdOpenInNew, MdList } from "react-icons/md";
+import { SimpleGrid, Box, useToast } from '@chakra-ui/react';
 import ResumeGridBox from './ResumeGridBox';
 import axios from 'axios';
 import { Config } from '../config';
@@ -9,6 +8,7 @@ interface Resume {
     id: string;
     name: string;
     major: string;
+    degree: string;
     graduationYear: string;
     jobInterest: Array<string>;
     portfolios?: Array<string>;

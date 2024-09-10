@@ -1,4 +1,4 @@
-import { Box, Text, Tooltip, VStack, HStack, Button } from "@chakra-ui/react";
+import { Box, Text, Tooltip, VStack, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdList, MdOpenInNew } from "react-icons/md";
 
@@ -6,6 +6,7 @@ interface Resume {
   id: string;
   name: string;
   major: string;
+  degree: string;
   graduationYear: string;
   jobInterest: Array<string>;
   portfolios?: Array<string>;
@@ -76,8 +77,9 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
         </Box>
       </Tooltip>
 
-      <Tooltip label="Show Links" fontSize="md">
+      <Tooltip label={resume.portfolios?.length === 0 ? "" : "Show Links"} fontSize="md">
         <Box
+          opacity={resume.portfolios?.length === 0 ? 0 : 1}
           padding="2px"
           borderRadius="5px"
           bg="transparent"
@@ -87,6 +89,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
           bottom="2"
           right="2"
           onClick={(e) => {
+            if (resume.portfolios?.length === 0) return;
             e.stopPropagation();
             toggleExpand(); // Toggle the expanded state
           }}
@@ -101,7 +104,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
             {resume.name}
           </Text>
           <Text mb={isExpanded ? 0 : 6} color="gray.500" fontSize="sm" mr="20px">
-            {resume.major}
+            {resume.degree} in {resume.major}
           </Text>
           {isExpanded && resume.portfolios && (
         <Box mb={8} maxWidth='100%'>

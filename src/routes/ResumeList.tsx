@@ -1,6 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Box, Text, Checkbox, VStack, Grid, GridItem, useMediaQuery, Button, useToast, useColorModeValue, HStack } from '@chakra-ui/react';
-import { MdOpenInNew } from "react-icons/md";
+import { Box, Text, VStack, Grid, GridItem, useMediaQuery, useToast } from '@chakra-ui/react';
 import ResumeListBox from './ResumeListBox';
 import axios from 'axios';
 import { Config } from '../config';
@@ -9,6 +8,7 @@ interface Resume {
   id: string;
   name: string;
   major: string;
+  degree: string;
   graduationYear: string;
   jobInterest: Array<string>;
   portfolios?: Array<string>;
@@ -83,6 +83,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
     checkbox: 50,
     name: 175,
     major: 300,
+    degree: 150,
     graduationYear: 150,
     actions: 150,
     data: 300,
@@ -114,6 +115,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
     };
   }, [navbarTop, baseColor]);
 
+  const [isLargerThan2560] = useMediaQuery("(min-width: 2560px)");
   const [isLargerThan1800] = useMediaQuery("(min-width: 1800px)");
   const [isLargerThan1550] = useMediaQuery("(min-width: 1550px)");  
   const [isLargerThan1280] = useMediaQuery("(min-width: 1280px)");
@@ -124,12 +126,24 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
   const [isLargerThan330] = useMediaQuery("(min-width: 330px)");
 
   useEffect(() => {
-    if (isLargerThan1800) {
+    if (isLargerThan2560) {
+        setColumnWidths({
+          checkbox: 50,
+          name: 600,
+          major: 600,
+          degree: 500,
+          graduationYear: 500,
+          actions: 250,
+          data: 300,
+        });
+    }
+    else if (isLargerThan1800) {
         setColumnWidths({
           checkbox: 50,
           name: 475,
-          major: 500,
-          graduationYear: 450,
+          major: 350,
+          degree: 300,
+          graduationYear: 250,
           actions: 250,
           data: 300,
         });
@@ -137,36 +151,40 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         setColumnWidths({
           checkbox: 50,
           name: 425,
-          major: 400,
-          graduationYear: 300,
+          major: 300,
+          degree: 200,
+          graduationYear: 200,
           actions: 250,
           data: 300,
         });
     } else if (isLargerThan1280) {
       setColumnWidths({
         checkbox: 50,
-        name: 375,
+        name: 300,
         major: 300,
-        graduationYear: 200,
-        actions: 250,
+        degree: 150,
+        graduationYear: 100,
+        actions: 200,
         data: 300,
       });
     } else if (isLargerThan960) {
       setColumnWidths({
         checkbox: 50,
-        name: 175,
-        major: 250,
-        graduationYear: 150,
-        actions: 225,
+        name: 150,
+        major: 200,
+        degree: 120,
+        graduationYear: 100,
+        actions: 205,
         data: 300,
       });
     } else if (isLargerThan700) {
       setColumnWidths({
         checkbox: 50,
         name: 125,
-        major: 130,
+        major: 120,
+        degree: 80,
         graduationYear: 90,
-        actions: 210,
+        actions: 110,
         data: 300,
       });
     } else if (isLargerThan550) {
@@ -174,6 +192,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         checkbox: 50,
         name: 100,
         major: 150,
+        degree: 100,
         graduationYear: 100,
         actions: 100,
         data: 300,
@@ -183,6 +202,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         checkbox: 50,
         name: 100,
         major: 150,
+        degree: 100,
         graduationYear: 100,
         actions: 60,
         data: 220,
@@ -192,6 +212,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         checkbox: 50,
         name: 125,
         major: 200,
+        degree: 150,
         graduationYear: 100,
         actions: 60,
         data: 150,
@@ -201,6 +222,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         checkbox: 50,
         name: 125,
         major: 200,
+        degree: 150,
         graduationYear: 100,
         actions: 60,
         data: 100,
@@ -240,7 +262,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
         window.open(response.data.url, '_blank');
     })
     .catch(function (error) {
-        // console.log(error);
+        console.log(error);
         showToast("Failed to open resume. Please try again later.");
     })
   };
@@ -261,7 +283,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
       >
         <Grid templateColumns={
             isLargerThan700
-                ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
+                ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
                 : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
             } gap={4} alignItems="center">
             <GridItem>
@@ -272,6 +294,11 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
                 <GridItem>
                     <ResizableColumn width={columnWidths.name} onResize={(width) => handleResize('name', width)} canResize={true} baseColor={baseColor}>
                     <Text fontWeight="bold">Name</Text>
+                    </ResizableColumn>
+                </GridItem>
+                <GridItem>
+                    <ResizableColumn width={columnWidths.degree} onResize={(width) => handleResize('degree', width)} canResize={true} baseColor={baseColor}>
+                    <Text fontWeight="bold">Degree</Text>
                     </ResizableColumn>
                 </GridItem>
                 <GridItem>
@@ -306,7 +333,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
 
     {resumes.map((resume) => {
         return (
-            <ResumeListBox resume={resume} isSelected={selectedResumes.includes(resume.id)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} isLargerThan550={isLargerThan550} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
+            <ResumeListBox resume={resume} isSelected={selectedResumes.includes(resume.id)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
         );
         // const isSelected = selectedResumes.includes(resume.id);
         // const [isExpanded, setIsExpanded] = useState(false);
