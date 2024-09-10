@@ -17,7 +17,7 @@ const navLessTemplateArea = `
 export function Page({pageContent, showNav}: PageProps) {
     return <Grid
         templateAreas={showNav ? navTemplateArea : navLessTemplateArea}
-        gridTemplateRows={'10vh 1fr'}
+        gridTemplateRows={showNav ? '10vh 1fr': '0vh 1fr'}
         gridTemplateColumns={showNav ? '0px 1fr' : '1fr'}
         h='100%'
         minH={"100vh"}
@@ -29,11 +29,11 @@ export function Page({pageContent, showNav}: PageProps) {
         <GridItem area={'header'} pl="10px" pt="10px">
             <NavBar />
         </GridItem>
-        {showNav ? 
+        {/* {showNav ? 
             <GridItem pl='2' area={'nav'}>
                 Nav
             </GridItem> : 
-            <></>}
+            <></>} */}
         
         <GridItem pl='2' area={'main'}>
             {pageContent}
