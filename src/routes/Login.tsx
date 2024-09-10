@@ -1,9 +1,46 @@
-import { Box, Button, Flex, HStack, Spacer, Text, Input, Center, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery } from "@chakra-ui/react";
+import axios from "axios";
+import { useState } from 'react';
+
+import TwoFactor from "./TwoFactor";
 
 export function Login() {
-    const [isMedium] = useMediaQuery("(max-width: 850px)");
-	const [isSmall] = useMediaQuery("(max-width: 600px)");
-	const [isXSmall] = useMediaQuery("(max-width: 400px)");
+    const [isSmall] = useMediaQuery("(max-width: 600px)");
+    const [isXSmall] = useMediaQuery("(max-width: 400px)");
+    const [email, setEmail] = useState(""); // State to store the email input
+    const [codePage, setCodePage] = useState(0);
+
+    const sponsorLogin = async (email: string) => {
+        const url = "https://api.reflectionsprojections.org/auth/sponsor/login";
+      
+        try {
+          const response = await axios.post(url, { email });
+          console.log("Success:", response.data);
+      
+          if (response.data === "Created") {
+            // navigate('/two-factor', { state: { email } });
+            setCodePage(1);
+          } else {
+            console.log("Response status:", response.status);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      };
+      
+    
+      const handleSubmit = () => {
+        console.log("Button clicked, email:", email);  // Log button click
+        sponsorLogin(email);  // Call the function with the current email value
+      };
+    
+        // Log the input value whenever it's updated
+    const handleEmailChange = (e:any) => {
+        setEmail(e.target.value);
+        console.log("Input value:", e.target.value);  // Log the input value
+    };
+
+
     return (
         <Box>
             <Box
@@ -21,28 +58,49 @@ export function Login() {
                 <Center mt="15vh">
 					<Box p='4' >
 						<HStack justifyContent="center" spacing="8px" textAlign={"center"}>
-							<Text fontSize={isXSmall ? "20" : isSmall ? "28" : isMedium ? "43" : "56"} fontFamily={"Roboto Slab"} fontWeight={"700"} letterSpacing={"0.08em"}> reflections </Text>
-							<Text fontSize={isXSmall ? "52" : isSmall ? "60" : isMedium ? "76" : "120"} fontFamily={"Roboto Slab"} fontWeight={"300"} letterSpacing={"0.08em"} mt="-10px"> |</Text>
-							<Text fontSize={isXSmall ? "20" : isSmall ? "28" : isMedium ? "43" : "56"} fontFamily={"Roboto Slab"} fontWeight={"700"} letterSpacing={"0.08em"}> projections </Text>
+							<Text fontSize={isXSmall ? "20" : isSmall ? "28" : "43"} fontFamily={"Roboto Slab"} fontWeight={"700"} letterSpacing={"0.08em"}> reflections </Text>
+							<Text fontSize={isXSmall ? "52" : isSmall ? "60" : "76"} fontFamily={"Roboto Slab"} fontWeight={"300"} letterSpacing={"0.08em"} mt="-10px"> |</Text>
+							<Text fontSize={isXSmall ? "20" : isSmall ? "28" : "43"} fontFamily={"Roboto Slab"} fontWeight={"700"} letterSpacing={"0.08em"}> projections </Text>
 						</HStack>
-					</Box>
+            <HStack justifyContent="center" spacing="8px" textAlign={"center"}>
+							<Text fontSize={isXSmall ? "20" : isSmall ? "28" : "43"} fontFamily={"Nunito"} fontWeight={"500"} letterSpacing={"0.08em"}> Resume Book </Text>
+						</HStack>
+					</Box>        
 				</Center>
+        {codePage === 1 ? (
+           <TwoFactor email={email} />
+        ) : ( 
+          <Box mt='5vh' zIndex="2">
+              <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>Enter your Email</Text>
+              <Input
+                  type="email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  placeholder="name@example.com"
+                  width="250px"
+                  mt="20px"
+                  // mx="auto"
+                  // bg="white"
+                  textColor="white"
+                  // borderRadius="5px"
+                  _placeholder={{ color: "gray.400" }}
+              />
+            <Button 
+              bg="blue.500"
+              color="white"
+              borderRadius="5px"
+              onClick={() => handleSubmit()} 
+              zIndex="3"
+              m={4}
+              mb={5}
+              _hover={{ bg: "blue.600" }}
+              >
+                Submit
+            </Button>
+          </Box>
+          )}
 
-
-                <Box mt='10vh' zIndex="2">
-                    <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>Enter your Email</Text>
-                    <Input
-                        placeholder="name@example.com"
-                        width="300px"
-                        mt="20px"
-                        mx="auto"
-                        bg="white"
-                        textColor="black"
-                        borderRadius="5px"
-                        _placeholder={{ color: "gray.400" }}
-                    />
-                </Box>
-
+                
             </Flex>
         </Box>
     );
