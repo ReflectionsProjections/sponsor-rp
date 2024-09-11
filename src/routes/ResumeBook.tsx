@@ -10,6 +10,7 @@ import { TiDocumentDelete } from "react-icons/ti";
 
 import axios from 'axios';
 
+import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Config } from "../config";
 import { FaMoon, FaSun } from 'react-icons/fa';
@@ -172,30 +173,83 @@ export function ResumeBook() {
         }
     };
 
-    const downloadResumes = () => {
+    const downloadResumes = async () => {
         const jwt = localStorage.getItem('jwt');
-        const selectedResumesIds = selectedResumes.join(',');
-        axios.get(Config.API_BASE_URL + "/s3/download/user/"+ selectedResumesIds, {
-            headers: {
-                Authorization: jwt
+        try {
+            const response = await axios.post(
+                Config.API_BASE_URL + "/s3/download/batch/",
+                { userIds: selectedResumes },
+                {
+                    headers: {
+                        Authorization: jwt,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            const { data: urls, errorCount } = response.data;
+
+            if (urls.length === 0) {
+                showToast("No resumes available for download.");
+                return;
             }
-        })
-        .then(function (response) {
-            // console.log(response.data);
-            const resData: ResumeLink[] | ResumeLink = response.data;
-            if (Array.isArray(resData)) {
-                resData.forEach(function (resumeURL) {
-                    downloadFileFromS3(resumeURL.url);
-                });
+            
+            if (urls.length === 1) {
+                // Single resume - download directly
+                const fileResponse = await axios.get(urls[0], { responseType: 'blob' });
+                const userId = getFileNameFromUrl(urls[0]).replace(".pdf", ""); 
+                const resume = filteredResumes.find(r => r.id == userId);
+                
+                if (resume === undefined) {
+                    return;
+                }
+
+                const fileName = cleanUpName(resume.name) + ".pdf";
+                saveAs(fileResponse.data, fileName);
             } else {
-                downloadFileFromS3(resData.url);
+                // Multiple resumes - create a zip file
+                const zip = new JSZip();
+                
+                console.log(filteredResumes);
+                for (const url of urls) {
+                    const userId = getFileNameFromUrl(url).replace(".pdf", "");
+                    const resume = filteredResumes.find(r => r.id == userId);
+                    if (resume === undefined) {
+                        continue;
+                    }
+
+                    const fileResponse = await axios.get(url, { responseType: 'blob' });
+                    const fileName = cleanUpName(resume.name) + ".pdf";
+
+                    zip.file(fileName, fileResponse.data);
+                }
+                
+                const content = await zip.generateAsync({ type: "blob" });
+                saveAs(content, "resumes.zip");
             }
-        })
-        .catch(function (error) {
-            // console.log(error);
-            showToast(`Error ${error}: Failed to download resumes. Please try again later.`);
-        })
-    }
+
+            if (errorCount > 0) {
+                showToast(`${errorCount} resume(s) could not be downloaded.`);
+            }
+        } catch (error) {
+            showToast("Failed to download resume(s). Please try again later.");
+        }
+    };
+
+    const cleanUpName = (str: string): string => {
+        return str
+          .toLowerCase()                                   // Convert the string to lowercase
+          .replace(/\s+(\w)/g, (_, c) => c.toUpperCase())  // Capitalize the first letter of each word after whitespace
+          .replace(/\s+/g, '')                             // Remove any remaining whitespace
+          .replace(/^\w/, (c) => c.toUpperCase());         // Capitalize the first letter of the result
+      };
+
+    const getFileNameFromUrl = (url: string): string => {
+        const parts = url.split('/');
+        const temp =  parts[parts.length - 1];
+        return temp.substring(0, temp.indexOf("?"));
+    };
+
 
     const getResumes = async () => {
         const jwt = localStorage.getItem("jwt");
@@ -261,9 +315,6 @@ export function ResumeBook() {
         if (selectedJobInterests.length > 0) {
             params.append('jobInterests', JSON.stringify(requestBody.jobInterests));
         }
-        console.log(params)
-        console.log(requestBody)
-        console.log(jwt);
 
         setResumes([]);
         setFilteredResumes([]);
@@ -275,7 +326,6 @@ export function ResumeBook() {
         // })
         axios.post(Config.API_BASE_URL + "/registration/filter/pagecount", requestBody, {headers})
         .then(function (response) {
-            console.log(response.data);
             setPageSize(response.data.pagecount);
             if (page > response.data.pagecount) {
                 setPage(1);
@@ -294,7 +344,7 @@ export function ResumeBook() {
                 portfolios: item.portfolios
             }));
 
-            console.log(fetchedResumes);
+            // console.log(fetchedResumes);
     
             // Use a Set to ensure unique resumes
             // const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
@@ -364,7 +414,7 @@ export function ResumeBook() {
                     />
                     </Flex>
                 </HStack>
-                <Text color='white'>Resume Book</Text>
+                <Text color='white' fontFamily={'Nunito'}>Resume Book</Text>
                 <Flex alignItems={'center'} zIndex="20">
                     <ButtonGroup isAttached border={'1px solid darkslategray'} borderRadius={'7px'} variant="outline">
                         <IconButton
