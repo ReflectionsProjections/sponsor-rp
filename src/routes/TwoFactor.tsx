@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Input, Text, HStack } from '@chakra-ui/react';
+import { Box, Button, Input, Text, HStack, VStack } from '@chakra-ui/react';
 
 interface TwoFactorProps {
   email: string;
+  sponsorLogin: (email: string) => void;
 }
 
-const TwoFactor: React.FC<TwoFactorProps> = ({ email }) => {
+const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
   const [code, setCode] = useState(Array(6).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -129,20 +130,26 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email }) => {
           />
         ))}
       </HStack>
-      <Button
-        bg="blue.500"
-        color="white"
-        borderRadius="5px"
-        zIndex="3"
-        m={4}
-        mb={5}
-        _hover={{ bg: "blue.600" }}
-        type="submit"
-        onClick={handleSubmit}
-        disabled={loading}
-      >
-        {loading ? 'Submitting...' : 'Submit'}
-      </Button>
+      <VStack spacing={2} mt="20px" justify="center">
+        <Button
+          bg="green.500"
+          color="white"
+          borderRadius="5px"
+          zIndex="3"
+          m={4}
+          mb={5}
+          _hover={{ bg: "green.600" }}
+          type="submit"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? 'Submitting...' : 'Submit'}
+        </Button>
+
+        <Button bg="blue.500" color="white" borderRadius="5px" m={4} mb={5} onClick={() => sponsorLogin(email)} _hover={{ bg: "blue.600" }}>
+          Resend Code
+        </Button>
+      </VStack>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
       {success && <p style={{ color: 'green' }}>{success}</p>}

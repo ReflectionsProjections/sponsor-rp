@@ -10,6 +10,7 @@ import { TiDocumentDelete } from "react-icons/ti";
 
 import axios from 'axios';
 
+import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import { Config } from "../config";
 import { FaMoon, FaSun } from 'react-icons/fa';
@@ -24,9 +25,9 @@ interface Resume {
     portfolios?: Array<string>;
 }
 
-interface ResumeLink {
-    url: string;
-}
+// interface ResumeLink {
+//     url: string;
+// }
 
 interface ResumeIDs {
     userId: string
@@ -149,53 +150,106 @@ export function ResumeBook() {
         }
     };
 
-    const downloadFileFromS3 = async (s3Url: string) => {
+    // const downloadFileFromS3 = async (s3Url: string) => {
+    //     try {
+    //       const response = await axios.get(s3Url, {
+    //         responseType: 'blob' // Ensure the response is a Blob
+    //       });
+      
+    //       // Extract the filename from the Content-Disposition header or generate one
+    //       const contentDisposition = response.headers['content-disposition'];
+    //       let filename = 'downloaded-file';
+    //       if (contentDisposition) {
+    //         const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+    //         if (filenameMatch.length === 2) {
+    //           filename = filenameMatch[1];
+    //         }
+    //       }
+      
+    //       saveAs(response.data, filename);
+    //     } catch (error) {
+    //         showToast("Failed to download resume. Please try again later.");
+    //     //   console.error('Error downloading the file:', error);
+    //     }
+    // };
+
+    const downloadResumes = async () => {
+        const jwt = localStorage.getItem('jwt');
         try {
-          const response = await axios.get(s3Url, {
-            responseType: 'blob' // Ensure the response is a Blob
-          });
-      
-          // Extract the filename from the Content-Disposition header or generate one
-          const contentDisposition = response.headers['content-disposition'];
-          let filename = 'downloaded-file';
-          if (contentDisposition) {
-            const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-            if (filenameMatch.length === 2) {
-              filename = filenameMatch[1];
+            const response = await axios.post(
+                Config.API_BASE_URL + "/s3/download/batch/",
+                { userIds: selectedResumes },
+                {
+                    headers: {
+                        Authorization: jwt,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            const { data: urls, errorCount } = response.data;
+
+            if (urls.length === 0) {
+                showToast("No resumes available for download.");
+                return;
             }
-          }
-      
-          saveAs(response.data, filename);
+            
+            if (urls.length === 1) {
+                // Single resume - download directly
+                const fileResponse = await axios.get(urls[0], { responseType: 'blob' });
+                const userId = getFileNameFromUrl(urls[0]).replace(".pdf", ""); 
+                const resume = filteredResumes.find(r => r.id == userId);
+                
+                if (resume === undefined) {
+                    return;
+                }
+
+                const fileName = cleanUpName(resume.name) + ".pdf";
+                saveAs(fileResponse.data, fileName);
+            } else {
+                // Multiple resumes - create a zip file
+                const zip = new JSZip();
+                
+                console.log(filteredResumes);
+                for (const url of urls) {
+                    const userId = getFileNameFromUrl(url).replace(".pdf", "");
+                    const resume = filteredResumes.find(r => r.id == userId);
+                    if (resume === undefined) {
+                        continue;
+                    }
+
+                    const fileResponse = await axios.get(url, { responseType: 'blob' });
+                    const fileName = cleanUpName(resume.name) + ".pdf";
+
+                    zip.file(fileName, fileResponse.data);
+                }
+                
+                const content = await zip.generateAsync({ type: "blob" });
+                saveAs(content, "resumes.zip");
+            }
+
+            if (errorCount > 0) {
+                showToast(`${errorCount} resume(s) could not be downloaded.`);
+            }
         } catch (error) {
-            showToast("Failed to download resume. Please try again later.");
-        //   console.error('Error downloading the file:', error);
+            showToast("Failed to download resume(s). Please try again later.");
         }
     };
 
-    const downloadResumes = () => {
-        const jwt = localStorage.getItem('jwt');
-        const selectedResumesIds = selectedResumes.join(',');
-        axios.get(Config.API_BASE_URL + "/s3/download/user/"+ selectedResumesIds, {
-            headers: {
-                Authorization: jwt
-            }
-        })
-        .then(function (response) {
-            // console.log(response.data);
-            const resData: ResumeLink[] | ResumeLink = response.data;
-            if (Array.isArray(resData)) {
-                resData.forEach(function (resumeURL) {
-                    downloadFileFromS3(resumeURL.url);
-                });
-            } else {
-                downloadFileFromS3(resData.url);
-            }
-        })
-        .catch(function (error) {
-            // console.log(error);
-            showToast(`Error ${error}: Failed to download resumes. Please try again later.`);
-        })
-    }
+    const cleanUpName = (str: string): string => {
+        return str
+          .toLowerCase()                                   // Convert the string to lowercase
+          .replace(/\s+(\w)/g, (_, c) => c.toUpperCase())  // Capitalize the first letter of each word after whitespace
+          .replace(/\s+/g, '')                             // Remove any remaining whitespace
+          .replace(/^\w/, (c) => c.toUpperCase());         // Capitalize the first letter of the result
+      };
+
+    const getFileNameFromUrl = (url: string): string => {
+        const parts = url.split('/');
+        const temp =  parts[parts.length - 1];
+        return temp.substring(0, temp.indexOf("?"));
+    };
+
 
     const getResumes = async () => {
         const jwt = localStorage.getItem("jwt");
@@ -272,7 +326,6 @@ export function ResumeBook() {
         // })
         axios.post(Config.API_BASE_URL + "/registration/filter/pagecount", requestBody, {headers})
         .then(function (response) {
-            // console.log(response.data);
             setPageSize(response.data.pagecount);
             if (page > response.data.pagecount) {
                 setPage(1);
@@ -361,7 +414,7 @@ export function ResumeBook() {
                     />
                     </Flex>
                 </HStack>
-                <Text color='white'>Resume Book</Text>
+                <Text color='white' fontFamily={'Nunito'}>Resume Book</Text>
                 <Flex alignItems={'center'} zIndex="20">
                     <ButtonGroup isAttached border={'1px solid darkslategray'} borderRadius={'7px'} variant="outline">
                         <IconButton
