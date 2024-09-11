@@ -25,9 +25,9 @@ interface Resume {
     portfolios?: Array<string>;
 }
 
-interface ResumeLink {
-    url: string;
-}
+// interface ResumeLink {
+//     url: string;
+// }
 
 interface ResumeIDs {
     userId: string
@@ -150,28 +150,28 @@ export function ResumeBook() {
         }
     };
 
-    const downloadFileFromS3 = async (s3Url: string) => {
-        try {
-          const response = await axios.get(s3Url, {
-            responseType: 'blob' // Ensure the response is a Blob
-          });
+    // const downloadFileFromS3 = async (s3Url: string) => {
+    //     try {
+    //       const response = await axios.get(s3Url, {
+    //         responseType: 'blob' // Ensure the response is a Blob
+    //       });
       
-          // Extract the filename from the Content-Disposition header or generate one
-          const contentDisposition = response.headers['content-disposition'];
-          let filename = 'downloaded-file';
-          if (contentDisposition) {
-            const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-            if (filenameMatch.length === 2) {
-              filename = filenameMatch[1];
-            }
-          }
+    //       // Extract the filename from the Content-Disposition header or generate one
+    //       const contentDisposition = response.headers['content-disposition'];
+    //       let filename = 'downloaded-file';
+    //       if (contentDisposition) {
+    //         const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+    //         if (filenameMatch.length === 2) {
+    //           filename = filenameMatch[1];
+    //         }
+    //       }
       
-          saveAs(response.data, filename);
-        } catch (error) {
-            showToast("Failed to download resume. Please try again later.");
-        //   console.error('Error downloading the file:', error);
-        }
-    };
+    //       saveAs(response.data, filename);
+    //     } catch (error) {
+    //         showToast("Failed to download resume. Please try again later.");
+    //     //   console.error('Error downloading the file:', error);
+    //     }
+    // };
 
     const downloadResumes = async () => {
         const jwt = localStorage.getItem('jwt');
