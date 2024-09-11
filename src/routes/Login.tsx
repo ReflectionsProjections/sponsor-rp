@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from 'react';
 
@@ -9,6 +9,18 @@ export function Login() {
     const [isXSmall] = useMediaQuery("(max-width: 400px)");
     const [email, setEmail] = useState(""); // State to store the email input
     const [codePage, setCodePage] = useState(0);
+    const [error, setError] = useState<string | null>(null);
+    const toast = useToast();
+    
+    const showToast = () => {
+      toast({
+        title: "Login Code Sent!",
+        description: "Please check your email for the login code.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+  }
 
     const sponsorLogin = async (email: string) => {
         const url = "https://api.reflectionsprojections.org/auth/sponsor/login";
@@ -20,19 +32,31 @@ export function Login() {
           if (response.data === "Created") {
             // navigate('/two-factor', { state: { email } });
             setCodePage(1);
+            showToast();
           } else {
             console.log("Response status:", response.status);
           }
         } catch (error) {
+          setError("Invalid Email. Please try again.");
           console.error("Error:", error);
         }
       };
       
     
       const handleSubmit = () => {
-        // console.log("Button clicked, email:", email);  // Log button click
-        sponsorLogin(email);  // Call the function with the current email value
-      };
+        // console.log("Button clicked, email:", email);
+        if (!email) {
+            setError("Please enter an email address.");
+            return;
+        }
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            setError("Please enter a valid email address.");
+            return;
+        }
+        setError(null);
+        sponsorLogin(email);
+    };
+
     
         // Log the input value whenever it's updated
     const handleEmailChange = (e:any) => {
@@ -97,7 +121,21 @@ export function Login() {
               >
                 Submit
             </Button>
+            {error && (
+                <Box
+                    mt={2}
+                    p={2}
+                    bg="red.500"
+                    color="white"
+                    borderRadius="md"
+                    maxWidth="250px"
+                    mx="auto"
+                >
+                    {error}
+                </Box>
+            )}
           </Box>
+            
           )}
 
                 
