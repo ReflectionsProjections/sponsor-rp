@@ -66,7 +66,7 @@ export function Login() {
 
 
     return (
-        <Box>
+        <Box minHeight={'800px'}>
             <Box
                 position="fixed"
                 bottom="0"
@@ -92,7 +92,7 @@ export function Login() {
 					</Box>        
 				</Center>
         {codePage === 1 ? (
-           <TwoFactor email={email} />
+           <TwoFactor email={email} sponsorLogin={sponsorLogin}/>
         ) : ( 
           <Box mt='5vh' zIndex="2">
               <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>Enter your Email</Text>
