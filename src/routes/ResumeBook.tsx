@@ -175,6 +175,8 @@ export function ResumeBook() {
 
     const downloadResumes = async () => {
         const jwt = localStorage.getItem('jwt');
+        let totalErrorCount = 0;
+    
         try {
             const response = await axios.post(
                 Config.API_BASE_URL + "/s3/download/batch/",
@@ -186,9 +188,10 @@ export function ResumeBook() {
                     }
                 }
             );
-
+    
             const { data: urls, errorCount } = response.data;
-
+            totalErrorCount += errorCount;
+    
             if (urls.length === 0) {
                 showToast("No resumes available for download.");
                 return;
@@ -196,43 +199,69 @@ export function ResumeBook() {
             
             if (urls.length === 1) {
                 // Single resume - download directly
-                const fileResponse = await axios.get(urls[0], { responseType: 'blob' });
-                const userId = getFileNameFromUrl(urls[0]).replace(".pdf", ""); 
-                const resume = filteredResumes.find(r => r.id == userId);
-                
-                if (resume === undefined) {
-                    return;
+                try {
+                    const fileResponse = await axios.get(urls[0], { responseType: 'blob' });
+                    const userId = getFileNameFromUrl(urls[0]).replace(".pdf", ""); 
+                    const resume = filteredResumes.find(r => r.id == userId);
+                    
+                    if (resume === undefined) {
+                        throw new Error("Resume not found in filteredResumes");
+                    }
+    
+                    const fileName = cleanUpName(resume.name) + ".pdf";
+                    saveAs(fileResponse.data, fileName);
+                } catch (error) {
+                    totalErrorCount++;
+                    console.error("Error downloading single resume:", error);
                 }
-
-                const fileName = cleanUpName(resume.name) + ".pdf";
-                saveAs(fileResponse.data, fileName);
             } else {
                 // Multiple resumes - create a zip file
                 const zip = new JSZip();
+                const failedDownloads = [];
                 
-                console.log(filteredResumes);
                 for (const url of urls) {
-                    const userId = getFileNameFromUrl(url).replace(".pdf", "");
-                    const resume = filteredResumes.find(r => r.id == userId);
-                    if (resume === undefined) {
-                        continue;
+                    try {
+                        const userId = getFileNameFromUrl(url).replace(".pdf", "");
+                        const resume = filteredResumes.find(r => r.id == userId);
+                        if (resume === undefined) {
+                            throw new Error("Resume not found in filteredResumes");
+                        }
+    
+                        const fileResponse = await axios.get(url, { responseType: 'blob' });
+                        const fileName = cleanUpName(resume.name) + ".pdf";
+    
+                        zip.file(fileName, fileResponse.data);
+                    } catch (error) {
+                        totalErrorCount++;
+                        failedDownloads.push(url);
+                        console.error("Error downloading resume:", url, error);
                     }
-
-                    const fileResponse = await axios.get(url, { responseType: 'blob' });
-                    const fileName = cleanUpName(resume.name) + ".pdf";
-
-                    zip.file(fileName, fileResponse.data);
                 }
                 
-                const content = await zip.generateAsync({ type: "blob" });
-                saveAs(content, "resumes.zip");
+                if (Object.keys(zip.files).length > 0) {
+                    try {
+                        const content = await zip.generateAsync({ type: "blob" });
+                        saveAs(content, "resumes.zip");
+                    } catch (error) {
+                        console.error("Error generating zip file:", error);
+                        showToast("Failed to create zip file. Some resumes may not have been downloaded.");
+                    }
+                } else {
+                    showToast("No resumes were successfully downloaded.");
+                    return;
+                }
+    
+                if (failedDownloads.length > 0) {
+                    console.log("Failed downloads:", failedDownloads);
+                }
             }
-
-            if (errorCount > 0) {
-                showToast(`${errorCount} resume(s) could not be downloaded.`);
+    
+            if (totalErrorCount > 0) {
+                showToast(`${totalErrorCount} resume(s) could not be downloaded.`);
             }
         } catch (error) {
-            showToast("Failed to download resume(s). Please try again later.");
+            console.error("Error in batch download request:", error);
+            showToast("Failed to initiate resume download(s). Please try again later.");
         }
     };
 
