@@ -333,7 +333,7 @@ const ResumeList: React.FC<ResumeListProps> = ({ resumes, selectedResumes, toggl
 
     {resumes.map((resume) => {
         return (
-            <ResumeListBox resume={resume} isSelected={selectedResumes.includes(resume.id)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
+            <ResumeListBox resume={resume} key={resume.id} isSelected={selectedResumes.includes(resume.id)} columnWidths={columnWidths} isLargerThan700={isLargerThan700} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
         );
         // const isSelected = selectedResumes.includes(resume.id);
         // const [isExpanded, setIsExpanded] = useState(false);

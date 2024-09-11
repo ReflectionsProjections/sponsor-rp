@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from 'react';
 
@@ -10,17 +10,29 @@ export function Login() {
     const [email, setEmail] = useState(""); // State to store the email input
     const [codePage, setCodePage] = useState(0);
     const [error, setError] = useState<string | null>(null);
+    const toast = useToast();
+    
+    const showToast = () => {
+      toast({
+        title: "Login Code Sent!",
+        description: "Please check your email for the login code.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+  }
 
     const sponsorLogin = async (email: string) => {
         const url = "https://api.reflectionsprojections.org/auth/sponsor/login";
       
         try {
           const response = await axios.post(url, { email });
-          console.log("Success:", response.data);
+          // console.log("Success:", response.data);
       
           if (response.data === "Created") {
             // navigate('/two-factor', { state: { email } });
             setCodePage(1);
+            showToast();
           } else {
             console.log("Response status:", response.status);
           }
@@ -32,7 +44,7 @@ export function Login() {
       
     
       const handleSubmit = () => {
-        console.log("Button clicked, email:", email);
+        // console.log("Button clicked, email:", email);
         if (!email) {
             setError("Please enter an email address.");
             return;
@@ -48,7 +60,7 @@ export function Login() {
         // Log the input value whenever it's updated
     const handleEmailChange = (e:any) => {
         setEmail(e.target.value);
-        console.log("Input value:", e.target.value);  // Log the input value
+        // console.log("Input value:", e.target.value);  // Log the input value
     };
 
 

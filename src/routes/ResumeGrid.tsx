@@ -94,7 +94,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
                 //         </VStack>
                 //     </Box>
                 // </Box>
-                <ResumeGridBox resume={resume} isSelected={isSelected} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
+                <ResumeGridBox resume={resume} key={resume.id} isSelected={isSelected} toggleResume={toggleResume} openResume={openResume} baseColor={baseColor} bgColor={bgColor} />
             );
         })}
       </SimpleGrid>
