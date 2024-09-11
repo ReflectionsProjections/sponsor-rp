@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Flex, HStack, Text, Input, Center, useMediaQuery, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { useState } from 'react';
 
@@ -10,6 +10,17 @@ export function Login() {
     const [email, setEmail] = useState(""); // State to store the email input
     const [codePage, setCodePage] = useState(0);
     const [error, setError] = useState<string | null>(null);
+    const toast = useToast();
+    
+    const showToast = () => {
+      toast({
+        title: "Login Code Sent!",
+        description: "Please check your email for the login code.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+  }
 
     const sponsorLogin = async (email: string) => {
         const url = "https://api.reflectionsprojections.org/auth/sponsor/login";
@@ -21,6 +32,7 @@ export function Login() {
           if (response.data === "Created") {
             // navigate('/two-factor', { state: { email } });
             setCodePage(1);
+            showToast();
           } else {
             console.log("Response status:", response.status);
           }
