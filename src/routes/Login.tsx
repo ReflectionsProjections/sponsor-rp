@@ -27,7 +27,7 @@ export function Login() {
       
         try {
           const response = await axios.post(url, { email });
-          console.log("Success:", response.data);
+          // console.log("Success:", response.data);
       
           if (response.data === "Created") {
             // navigate('/two-factor', { state: { email } });
@@ -44,7 +44,7 @@ export function Login() {
       
     
       const handleSubmit = () => {
-        console.log("Button clicked, email:", email);
+        // console.log("Button clicked, email:", email);
         if (!email) {
             setError("Please enter an email address.");
             return;
@@ -60,7 +60,7 @@ export function Login() {
         // Log the input value whenever it's updated
     const handleEmailChange = (e:any) => {
         setEmail(e.target.value);
-        console.log("Input value:", e.target.value);  // Log the input value
+        // console.log("Input value:", e.target.value);  // Log the input value
     };
 
 

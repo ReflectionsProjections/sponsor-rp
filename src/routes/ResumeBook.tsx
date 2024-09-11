@@ -261,9 +261,6 @@ export function ResumeBook() {
         if (selectedJobInterests.length > 0) {
             params.append('jobInterests', JSON.stringify(requestBody.jobInterests));
         }
-        console.log(params)
-        console.log(requestBody)
-        console.log(jwt);
 
         setResumes([]);
         setFilteredResumes([]);
@@ -275,7 +272,7 @@ export function ResumeBook() {
         // })
         axios.post(Config.API_BASE_URL + "/registration/filter/pagecount", requestBody, {headers})
         .then(function (response) {
-            console.log(response.data);
+            // console.log(response.data);
             setPageSize(response.data.pagecount);
             if (page > response.data.pagecount) {
                 setPage(1);
@@ -294,7 +291,7 @@ export function ResumeBook() {
                 portfolios: item.portfolios
             }));
 
-            console.log(fetchedResumes);
+            // console.log(fetchedResumes);
     
             // Use a Set to ensure unique resumes
             // const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
