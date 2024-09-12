@@ -1,6 +1,7 @@
-import { Box, Text, Tooltip, VStack, Button } from "@chakra-ui/react";
+import { Box, Image, Text, Tooltip, VStack, Button } from "@chakra-ui/react";
 import { useState } from "react";
-import { MdList, MdOpenInNew } from "react-icons/md";
+import { MdLink, MdContactPage } from "react-icons/md";
+import { Config } from "../config";
 
 interface Resume {
   id: string;
@@ -58,6 +59,11 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
         borderWidth: "3px",
       }}
     >
+      {Config.STAFF_UIDs.includes(resume.id) && (
+        <Tooltip label="Staff Member" fontSize="md">
+          <Image src="/2024_rp_logo.svg" width='20px' height='20px' />
+        </Tooltip>
+      )}
       <Tooltip label="Open Resume" fontSize="md">
         <Box
           padding="2px"
@@ -73,7 +79,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
             openResume(resume.id);
           }}
         >
-          <MdOpenInNew size={30} />
+          <MdContactPage size={30} />
         </Box>
       </Tooltip>
 
@@ -94,7 +100,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
             toggleExpand(); // Toggle the expanded state
           }}
         >
-          <MdList size={30} />
+          <MdLink size={30} />
         </Box>
       </Tooltip>
 
@@ -121,6 +127,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
                   }
                 return (
                     <Button
+                        key={link}
                         backgroundColor={'gray.'+baseColor}
                         _hover={{ backgroundColor: 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100) }}
                         color={'blue.500'}

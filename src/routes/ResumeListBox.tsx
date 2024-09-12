@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Grid, GridItem, Checkbox, VStack, Text, Button, SimpleGrid, Center } from '@chakra-ui/react';
+import { Box, Grid, GridItem, Checkbox, VStack, Text, Image, Button, SimpleGrid, Center, Tooltip, HStack } from '@chakra-ui/react';
 import { MdOpenInNew, MdList } from 'react-icons/md';
+import { Config } from '../config';
 
 interface Resume {
     id: string;
@@ -72,12 +73,19 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
           } gap={4} alignItems="center">
             <GridItem>
-              <Checkbox 
-                size="lg"
-                isChecked={isSelected}
-                onChange={() => toggleResume(resume.id)}
-                borderColor={'gray.400'}
-              />
+              <HStack>
+                <Checkbox 
+                  size="lg"
+                  isChecked={isSelected}
+                  onChange={() => toggleResume(resume.id)}
+                  borderColor={'gray.400'}
+                />
+                {Config.STAFF_UIDs.includes(resume.id) && (
+                  <Tooltip label="Staff Member" fontSize="md">
+                    <Image src="/2024_rp_logo.svg" width='20px' height='20px' />
+                  </Tooltip>
+                )}
+              </HStack>
             </GridItem>
             {isLargerThan700 ? (
               <>
@@ -152,6 +160,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                   const displayURL = url.hostname;
                   return (
                     <Button
+                      key={link}
                       backgroundColor={'gray.'+baseColor}
                       _hover={{ backgroundColor: 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100) }}
                       color={'blue.500'}
