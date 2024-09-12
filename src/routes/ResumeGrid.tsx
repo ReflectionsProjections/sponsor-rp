@@ -44,7 +44,7 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({ resumes, selectedResumes, toggl
     })
     .then(function (response) {
         window.open(response.data.url, '_blank');
-        console.log(response.data.url);
+        // console.log(response.data.url);
     })
     .catch(function (error) {
         console.log(error);
