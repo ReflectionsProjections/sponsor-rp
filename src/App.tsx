@@ -11,9 +11,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="*" element={<Page showNav={true} pageContent={<Home />} />} />
-        <Route path="/resume-book" element={<Page showNav={false} pageContent={<ResumeBook />} />} />
+        {/* <Route path="/resume-book" element={<Page showNav={false} pageContent={<ResumeBook />} />} />
         <Route path="/login" element={<Page showNav={true} pageContent={<Login />} />} />
-        <Route path="/resume-book/dev" element={<Page showNav={false} pageContent={<ResumeAllPDF />} />} />
+        <Route path="/resume-book/dev" element={<Page showNav={false} pageContent={<ResumeAllPDF />} />} /> */}
       </Routes>
     </BrowserRouter>
   )

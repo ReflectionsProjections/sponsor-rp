@@ -1,7 +1,7 @@
 export const customTheme = {
     colors: {
         brand: {
-            100: '#0F1130'
+            100: '#ffffff'
         },
     }, 
     components: {
