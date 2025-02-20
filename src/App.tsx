@@ -2,9 +2,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Page } from "./components/Page";
 import { Home } from "./routes/Home";
-import { Login } from "./routes/Login";
-import { ResumeBook } from "./routes/ResumeBook";
-import { ResumeAllPDF } from "./routes/ResumeAllPDF";
+// import { Login } from "./routes/Login";
+// import { ResumeBook } from "./routes/ResumeBook";
+// import { ResumeAllPDF } from "./routes/ResumeAllPDF";
 
 function App() {
   return (
