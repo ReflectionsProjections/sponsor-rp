@@ -2,7 +2,7 @@ import { Box, Flex, Text, Spacer, Stack, HStack, Button, useMediaQuery } from "@
 import '@fontsource/roboto-slab'
 import '@fontsource/nunito'
 
-const mailToUrl = "mailto:divyam4@illinois.edu, snall6@illinois.edu?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections";
+const mailToUrl = "mailto:jangada2@illinois.edu, kaavyam2@illinois.edu?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections";
 
 export function Home() {
     const [isMobile] = useMediaQuery("(max-width: 850px)");
