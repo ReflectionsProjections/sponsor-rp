@@ -71,7 +71,7 @@ export function Home() {
                     )}
                 <Spacer />
                 <Stack direction={isMobile ? 'column' : 'row'} justifyContent="center" spacing={isMobile ? '30px' : "220px"} alignItems='center' mt='10px'>
-                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href="/RP2024_SponsorshipDoc.pdf"> Sponsorship Packet </Button>
+                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href="/RP2025_SponsorshipDoc.pdf"> Sponsorship Packet </Button>
                     <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href={mailToUrl}> I'm Interested! </Button>
                 </Stack>
             </Flex>
