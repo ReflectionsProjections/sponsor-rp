@@ -60,7 +60,7 @@ export function Home() {
                             
                             <Box transform={isMobile ? '': 'translate(-10px, -8px)'}>
                                 <Text fontSize="40" fontFamily={"Nunito"} fontWeight={"700"} letterSpacing={"0.09em"}> SEPTEMBER </Text>
-                                <Text fontSize="40" fontFamily={"Nunito"} fontWeight={"700"}> 18-22 </Text>
+                                <Text fontSize="40" fontFamily={"Nunito"} fontWeight={"700"}> 16-20 </Text>
                             </Box>
                             
                             <Box>
