@@ -2,7 +2,7 @@ import { Box, Flex, Text, Spacer, Stack, HStack, Button, useMediaQuery } from "@
 import '@fontsource/roboto-slab'
 import '@fontsource/nunito'
 
-const mailToUrl = "mailto:jangada2@illinois.edu, kaavyam2@illinois.edu?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections";
+const mailToUrl = "mailto:jangada2@illinois.edu, kaavyam2@illinois.edu?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections&cc=corporate@reflectionsprojections.org";
 
 export function Home() {
     const [isMobile] = useMediaQuery("(max-width: 850px)");
@@ -71,8 +71,8 @@ export function Home() {
                     )}
                 <Spacer />
                 <Stack direction={isMobile ? 'column' : 'row'} justifyContent="center" spacing={isMobile ? '30px' : "220px"} alignItems='center' mt='10px'>
-                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href="/RP2025_SponsorshipDoc.pdf"> Sponsorship Packet </Button>
-                    <Button w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href={mailToUrl}> I'm Interested! </Button>
+                    <Button color={"#000000"} bg={"#EDF2F7"} w={"220px"} zIndex={"1"} _hover={{ bg: "#FFEF64" }} as="a" href="/R_P_2025_Corporate_Sponsor_Packet.pdf"> Sponsorship Packet </Button>
+                    <Button color={"#000000"} bg={"#EDF2F7"} w={"220px"} zIndex={"1"} _hover={{ color: "#000000", bg: "#FFEF64" }} as="a" href={mailToUrl}> I'm Interested! </Button>
                 </Stack>
             </Flex>
         </Box>
